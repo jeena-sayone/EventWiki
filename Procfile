@@ -1,1 +1,1 @@
-web: gunicorn eventapp.wsgi
+web: gunicorn EventWiki.wsgi
