@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+    {%load static %}
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>EventWiki</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href= {% static 'assets/favicon.ico' %}/>
+        <!-- Font Awesome icons (free version)-->
+        <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Google fonts-->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href={% static 'css/styles.css' %} rel="stylesheet" />
+        <!-- Alertify CSS -->
+        <!-- CSS -->
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+        <style>
+            table {font-family: arial, sans-serif;
+                    border-collapse: collapse;
+                    width: 100%;
+                  }
+    
+            td, th {border: 1px solid #dddddd;
+                    text-align: left;
+                    padding: 8px;
+                    border-color: #f1e20d;
+                    }
+    
+            tr:nth-child(even) {background-color: #dddddd;}
+            .thumbnail_poster {
+                border: 1px solid #ddd; /* Gray border */
+                border-radius: 4px;  /* Rounded border */
+                padding: 5px; /* Some padding */
+                width: 80px; /* Set a small width */
+              }
+              
+              /* Add a hover effect (blue shadow) */
+              thumbnail_poster:hover {
+                box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+              }
+        </style>
+        <script>
+            var arrGloHtmlAllEventsData = JSON.parse(JSON.stringify(eval("(" + "{{lstAllItems|safe}}" + ")")));  
+          
+        </script>
+    </head>
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+            <div class="container">
+                <a class="navbar-brand" href="#page-top"><img src= {% static 'assets/img/navbar-logo.svg' %}  alt="..." /></a>
+              
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                       
+                        <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                        {% comment %} <li class="nav-item"><a class="nav-link" href="{% url 'addEvent' %}"><i class="bi bi-plus"></i>Create Event</a></li> {% endcomment %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                        {% if request.session.intLoginUserId %}
+                        <li class="nav-item"><a class="nav-link" href=""><i class="fa fa-user"></i> {{request.session.strLoginUserName}}</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Masthead-->
+        <header class="masthead">
+            <div class="container">
+                <div class="masthead-subheading">Welcome To Our One-Page Event Website</div>
+               
+            </div>
+        </header>
+
+        <!-- About-->
+        <section class="page-section" id="about">
+           
+                <div class="container">
+                    <div style="display: block; text-align: center;">
+                    <div class="masthead-heading text-uppercase text-center" style="display: inline-block;"><h2>My Events</h2></div>
+                    <div class="create-new-event-button">
+                        <a class="btn btn-primary" href="{% url 'addEvent' %}"><i class="fa fa-plus"></i> New Event</a>
+                    </div>
+                    </div>
+                    <form id="frmIdViewEvents">
+                        {% csrf_token %}
+                        <table style="width:100%">
+                            <tr>
+                                <td style="width:10%; text-transform:uppercase;">Poster</td>
+                                <td style="width:15%; text-transform:uppercase;">Event</td>
+                                <td style="width:10%; text-transform:uppercase ;">Venue</td>
+                                <td style="width:10%; text-transform:uppercase;">Event Type</td>
+                                <td style="width:20%; text-transform:uppercase">Description</td>
+                                <td style="width:10%; text-transform:uppercase;">Start Date</td>
+                                <td style="width:10%; text-transform:uppercase;">End Date</td>
+                                <td style="width:5%; text-transform:uppercase; ">Payment</td>
+                                <td style="width:5%; text-transform:uppercase; ">Edit</td>
+                                <td style="width:5%; text-transform:uppercase;">Delete</td>
+                            </tr>
+                            <tbody id = "tbyIdListAllEvents"></tbody>
+                          
+                        </table>
+                    </form>
+                </div>          
+        </section>
+       
+        <!-- Footer-->
+        <footer class="footer py-4">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-4 text-lg-start">Copyright &copy; EventWiki 2022</div>
+                    <div class="col-lg-4 my-3 my-lg-0">
+                        <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>
+                        <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+        <!-- Core theme JS-->
+        <script src="{% static 'js/scripts.js' %}"></script>
+        <script src="{% static 'js/eventList.js' %}"></script>
+
+        <!-- Alertify Javascript File -->
+        <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+        {% for flashmsg in messages %}
+            <script>        
+                alertify.set('notifier','position', 'top-center');
+                alertify.success('{{flashmsg}}');
+            </script>
+        {%endfor%} 
+    </body>
+</html>

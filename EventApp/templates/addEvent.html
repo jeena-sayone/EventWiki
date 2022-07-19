@@ -1,0 +1,147 @@
+    <!DOCTYPE html>
+    <html lang="en">
+        {%load static %}
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+            <meta name="description" content="" />
+            <meta name="author" content="" />
+            <title>EventWiki</title>
+            <!-- Favicon-->
+            <link rel="icon" type="image/x-icon" href= {% static 'assets/favicon.ico' %} />
+            <!-- Font Awesome icons (free version)-->
+            <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+            <!-- Google fonts-->
+            <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+            <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+            <!-- Core theme CSS (includes Bootstrap)-->
+            <link href={% static 'css/styles.css' %} rel="stylesheet" />
+
+            <!-- Alertify CSS -->
+            <!-- CSS -->
+            <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+            <!-- Default theme -->
+            <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+        </head>
+        <body id="page-top">
+            <!-- Navigation-->
+            <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+                <div class="container">
+                    <a class="navbar-brand" href="#page-top"><img src= {% static 'assets/img/navbar-logo.svg' %}  alt="..." /></a>
+                
+                    <div class="collapse navbar-collapse" id="navbarResponsive">
+                        <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                           
+                            <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+                            {% if request.session.intLoginUserId %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'eventsList' %}">MY EVENTS</a></li>
+
+                            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+                            <li class="nav-item"><a class="nav-link" href=""><i class="fa fa-user"></i> {{request.session.strLoginUserName}}</a></li>
+                            {% endif %}
+                        </ul>
+                    </div> 
+                </div>
+            </nav>
+        
+    
+        
+            <!-- Contact-->
+            <section class="page-section" id="contact">
+                <div class="container">
+                    <form id="formIdCreateEvent" method = "POST" action = "">
+                        <div class="row">
+                            <div style="padding: 5rem 0 1rem 0;text-align: center;">
+                            <h3 class="section-heading text-uppercase">Create Your Event</h3>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <!-- Event Name-->
+                                    <label for="txtIdEventName" class="labelWhite">Event Name</label>
+                                    <input class="form-control" id="txtIdEventName" type="text" placeholder="Event Name *" uppercase>
+                                </div>                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="strEventStartTime" class="labelWhite">Start Time</label>
+                                    <input  class="form-control" type="datetime-local" id="strEventStartTime" name="eventStartTime">
+                                </div>                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="cmbIdEventLocation" class="labelWhite">Where will your event take place?</label>
+                                    <select class="form-select" id="cmbIdEventLocation">
+                                        <option value="1">Pysical venue</option>
+                                        <option value="2">Online</option>
+                                        <option value="3">Recorded Events</option>
+                                    </select>
+                               </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="strEventEndTime" class="labelWhite">End Time</label>
+                                    <input  class="form-control" type="datetime-local" id="strEventEndTime" name="eventEndTime">
+                                </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="txtIdEventLocation" class="labelWhite">Location Name</label>
+                                    <input class="form-control" id="txtIdEventLocation" type="text" placeholder="Event Location *" data-sb-validations="required" />
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="formFile" class="form-label labelWhite">Event Poster</label>
+                                    <input class="form-control" type="file" id="uploadFile">
+                               </div>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="txaIdEventDesc" class="labelWhite">Event Description</label>
+                                    <textarea class="form-control" id="txaIdEventDesc" rows="5" value="" style="width: 50%;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row text-center" style="margin-right: auto; margin-left: auto; display: block;">
+                                    <button class="btn btn-primary" id="btnIdCreateEvent" type="submit" style="width: auto;">CREATE</button>
+                                    <button class="btn btn-primary" id="btnIdUpdateEvent" type="submit" style="width: auto;">UPDATE</button>
+                                    <a style="text-decoration: none;" href={% url 'eventsList' %}>Cancel</a>
+                        </div>
+                           
+                    
+                    </form>
+                </div>
+            </section>
+            <!-- Footer-->
+            <footer class="footer py-4">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-4 text-lg-start">Copyright &copy; EventWiki 2022</div>
+                        <div class="col-lg-4 my-3 my-lg-0">
+                            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                        <div class="col-lg-4 text-lg-end">
+                            <a class="link-dark text-decoration-none me-3" href="#!">Privacy Policy</a>
+                            <a class="link-dark text-decoration-none" href="#!">Terms of Use</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- Bootstrap core JS-->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+            <!-- Core theme JS-->
+            <script src="{% static 'js/scripts.js' %}"></script>
+        
+            {% comment %} <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script> {% endcomment %}
+            <script src="{% static 'js/addEvents.js' %}"></script>
+
+        </body>
+    </html>
