@@ -4,10 +4,11 @@ from django.urls import reverse
 import json
 import os
 import datetime
+from django.utils import timezone
 
 from requests import request, session
 import stripe
-from pprint import pp, pprint
+from pprint import pprint
 from django.shortcuts import render,redirect
 from django.db.models import Q
 from django.contrib import messages
@@ -49,7 +50,6 @@ def index(request):
         dctAllItems['strEventName'] = tbmEachItem.vhr_event_name
         dctAllItems['strEventsDescription'] = '%s <br> Venue : %s <br> Event Type : %s \n Date : %s - %s' %(tbmEachItem.vhr_event_description,tbmEachItem.vhr_event_venue,lstAllEventLocationType[tbmEachItem.int_event_location_type],tbmEachItem.dat_event_start_date_time.strftime(strOutputFormat),tbmEachItem.dat_event_end_date_time.strftime(strOutputFormat))
         lstAllItems.append(dctAllItems)
-    pprint(lstAllItems)
     return render(request,'index.html',{'lstAllItems':lstAllItems})
 
 # Login
@@ -214,7 +214,6 @@ def eventsList(request):
 
     # start = time.time()
     
-    pprint("LOAD EVENTS LIST")
     tbmItems = clsEventDetails.objects.filter(~Q(int_last_action = 0),Q(fk_user_id = int(request.session['intLoginUserId'])))
     lstAllItems = []
     strOutputFormat = '%Y-%m-%d %H:%M:%S'
@@ -236,7 +235,6 @@ def eventsList(request):
     # end = time.time()
     # timeTaken = end - start
     # print("Time Taken: --" ,timeTaken)
-    pprint(lstAllItems)
     return render(request,'eventsList.html',{'lstAllItems':lstAllItems})
 
 def deleteEvent(request):
@@ -275,14 +273,8 @@ def createCheckoutSession(request):
     IntEventId = request.POST.get('txtEventId')
     strEventName = request.POST.get('txtEventName')
     # lstSignupData = json.loads(IntEventId)
-
-    
-    print(IntEventId)
-    print(strEventName)
-
     
     host = request.get_host()
-    pprint(host)
     checkout_session = stripe.checkout.Session.create(
     payment_method_types = ['card'],
     metadata = {'event_id' : IntEventId,'event_name': strEventName},
@@ -336,7 +328,6 @@ def my_webhook_view(request):
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
         if session.payment_status == 'paid':
-            pprint(session.metadata.event_id)
             #Update Events Data
             if session.metadata.event_id:
                 try:

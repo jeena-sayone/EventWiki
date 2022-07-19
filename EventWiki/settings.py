@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
-import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,9 +26,9 @@ STRIPE_PUBLIC_KEY = 'pk_test_51LMRNeSH0vrOjKwMLvKa4UG4ER3xGdbA3jydTQo4vWsOErU2Cg
 STRIPE_SECRET_KEY = 'sk_test_51LMRNeSH0vrOjKwMfvYQp0H5kc085AtTVGtNF5iWwQL1w4kyDZV25vH2zphNrlLiAvGvlcN29kmuqhCbzbUgozOo00PdLYQpXX'
 STRIPE_WEBHOOK_SECRET = 'whsec_f0ca155536b7dab732c87954f8ea2e2e37e626312e1810d355a0562cb0c3c8df'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -52,7 +51,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'EventWiki.urls'
@@ -121,16 +119,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATICFILES_DIRS = [BASE_DIR / "static",]
+STATICFILES_DIRS = [BASE_DIR / "EventApp/static",]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-django_heroku.settings(locals())
