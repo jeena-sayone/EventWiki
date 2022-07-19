@@ -26,7 +26,7 @@ STRIPE_PUBLIC_KEY = 'pk_test_51LMRNeSH0vrOjKwMLvKa4UG4ER3xGdbA3jydTQo4vWsOErU2Cg
 STRIPE_SECRET_KEY = 'sk_test_51LMRNeSH0vrOjKwMfvYQp0H5kc085AtTVGtNF5iWwQL1w4kyDZV25vH2zphNrlLiAvGvlcN29kmuqhCbzbUgozOo00PdLYQpXX'
 STRIPE_WEBHOOK_SECRET = 'whsec_f0ca155536b7dab732c87954f8ea2e2e37e626312e1810d355a0562cb0c3c8df'
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
