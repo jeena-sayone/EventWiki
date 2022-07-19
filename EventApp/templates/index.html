@@ -74,7 +74,7 @@
                     {% for objEvents in lstAllItems %}
                     <div class="col-sm-3 col-md-6 col-lg-4">
                         <div class="card" style="width: 25rem;">
-                            <img class="card-img-top" src={% static objEvents.strEventPoster %} alt="Card image cap">
+                            <img class="card-img-top" src="{% static objEvents.strEventPoster %}" alt="Card image cap">
                             <div class="card-body">
                               <h5 class="card-title">{{ objEvents.strEventName }}</h5>
                               <p class="card-text">{{ objEvents.strEventDescription }}</p>
