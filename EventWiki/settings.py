@@ -28,7 +28,7 @@ STRIPE_WEBHOOK_SECRET = 'whsec_f0ca155536b7dab732c87954f8ea2e2e37e626312e1810d35
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
