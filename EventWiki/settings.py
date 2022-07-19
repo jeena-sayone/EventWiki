@@ -28,7 +28,7 @@ STRIPE_WEBHOOK_SECRET = 'whsec_f0ca155536b7dab732c87954f8ea2e2e37e626312e1810d35
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['event-wiki.herokuapp.com']
+ALLOWED_HOSTS = ['event-wiki.herokuapp.com','127.0.0.1']
 
 
 # Application definition
@@ -119,14 +119,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 STATICFILES_DIRS = [BASE_DIR / "EventApp/static",]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'EventApp/static')
 
 
