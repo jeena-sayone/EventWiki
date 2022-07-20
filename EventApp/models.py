@@ -22,7 +22,7 @@ class clsEventDetails(models.Model):
     dat_event_end_date_time = models.DateTimeField()
     vhr_event_name = models.CharField(max_length=30,blank=True)
     vhr_event_venue = models.CharField(max_length=30,blank=True)
-    vhr_event_description = models.TextField(max_length=100,blank=True)
+    vhr_event_description = models.TextField()
     vhr_event_file_upload = models.CharField(max_length=100,blank=True)
     dat_created_datetime = models.DateTimeField()
     int_event_location_type = models.IntegerField(default=1)

@@ -205,6 +205,7 @@ def eventsList(request):
     lstAllItems = []
     strOutputFormat = '%Y-%m-%d %H:%M:%S'
     for tbmEachItem in tbmItems:
+        
         dctAllItems = {}
         dctAllItems['intPkEventId'] = tbmEachItem.pk_event_id
         dctAllItems['intFkUserId'] = tbmEachItem.fk_user_id
@@ -212,13 +213,14 @@ def eventsList(request):
         dctAllItems['strEventEndDateTime'] = tbmEachItem.dat_event_end_date_time.strftime(strOutputFormat)
         dctAllItems['strEventName'] = tbmEachItem.vhr_event_name
         dctAllItems['strEventVenue'] = tbmEachItem.vhr_event_venue
-        dctAllItems['strEventDescription'] = tbmEachItem.vhr_event_description
+        dctAllItems['strEventDescription'] = tbmEachItem.vhr_event_description.replace('\n','')
         dctAllItems['strEventPoster'] = tbmEachItem.vhr_event_file_upload
         dctAllItems['strCreatedDateTime'] = tbmEachItem.dat_created_datetime.strftime(strOutputFormat)
         dctAllItems['intLastAction'] = tbmEachItem.int_last_action
         dctAllItems['intIfPaid'] = tbmEachItem.int_if_paid  
         dctAllItems['intEventLocation'] = tbmEachItem.int_event_location_type
         lstAllItems.append(dctAllItems)
+       
     return render(request,'eventsList.html',{'lstAllItems':lstAllItems})
 
 def deleteEvent(request):
