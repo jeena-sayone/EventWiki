@@ -220,7 +220,6 @@ def eventsList(request):
         dctAllItems['intIfPaid'] = tbmEachItem.int_if_paid  
         dctAllItems['intEventLocation'] = tbmEachItem.int_event_location_type
         lstAllItems.append(dctAllItems)
-       
     return render(request,'eventsList.html',{'lstAllItems':lstAllItems})
 
 def deleteEvent(request):
