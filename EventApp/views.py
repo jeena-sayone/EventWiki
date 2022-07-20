@@ -36,7 +36,6 @@ def index(request):
         dctAllItems['intFkUserId'] = tbmEachItem.fk_user_id
         dctAllItems['strEventStartDateTime'] = tbmEachItem.dat_event_start_date_time.strftime(strOutputFormat)
         dctAllItems['strEventEndDateTime'] = tbmEachItem.dat_event_end_date_time.strftime(strOutputFormat)
-      
         dctAllItems['strEventVenue'] = tbmEachItem.vhr_event_venue
         dctAllItems['strEventDescription'] = tbmEachItem.vhr_event_description
         dctAllItems['strEventPoster'] = 'attachment/'+tbmEachItem.vhr_event_file_upload
@@ -45,10 +44,7 @@ def index(request):
         dctAllItems['intIfPaid'] = tbmEachItem.int_if_paid  
         dctAllItems['intEventLocation'] = tbmEachItem.int_event_location_type
         dctAllItems['strEventType'] = lstAllEventLocationType[tbmEachItem.int_event_location_type]
-        
-        
         dctAllItems['strEventName'] = tbmEachItem.vhr_event_name
-        dctAllItems['strEventsDescription'] = '%s <br> Venue : %s <br> Event Type : %s \n Date : %s - %s' %(tbmEachItem.vhr_event_description,tbmEachItem.vhr_event_venue,lstAllEventLocationType[tbmEachItem.int_event_location_type],tbmEachItem.dat_event_start_date_time.strftime(strOutputFormat),tbmEachItem.dat_event_end_date_time.strftime(strOutputFormat))
         lstAllItems.append(dctAllItems)
     return render(request,'index.html',{'lstAllItems':lstAllItems})
 
@@ -58,12 +54,10 @@ def login(request):
     if request.method == 'POST':
         strEmail = request.POST.get('txtEmail')
         strPassword = request.POST.get('txtPassword')
-       
         # // Check User Authentication
         tbmUser = clsUser.objects.filter(Q(vhr_email__iexact=strEmail),Q(vhr_password__iexact=strPassword))
         try:
             if tbmUser[0]:
-               
                 request.session['intLoginUserId'] = tbmUser[0].pk_user_id
                 request.session['strLoginUserName'] = tbmUser[0].vhr_user_name
                 request.session['strEmail'] = tbmUser[0].vhr_email
@@ -81,7 +75,6 @@ def logout(request):
     request.session['strLoginUserName'] = ''
     request.session['strEmail'] = ''
     # request.session.flush()
-    
     return redirect('index')
 
 # Login
@@ -114,15 +107,13 @@ def signup(request):
            
         jsnResponse = json.dumps(dctResponse)
         mimetype = 'application/json'
-        return HttpResponse(jsnResponse, mimetype) 
-            
+        return HttpResponse(jsnResponse, mimetype)            
     else:
         return render(request,'signup.html')
     pass
 
 @csrf_exempt 
-def addEvent(request):
-    
+def addEvent(request):  
     
     if request.method == 'POST':
         jsnCreateEventData = request.POST.get('arrCreateEventData')
@@ -196,7 +187,6 @@ def updateEvent(request):
             # tbmEvent.dat_created_datetime = datetime.datetime.now()
             tbmEvent.save()
             messages.success(request,'Event Updated successfully!')
-            print('Event Updated successfully!')
             dctResponse['strStatus'] = 'SUCCESS'
         
         strFileDirName = os.path.join('EventApp','static','attachment',strFileName)
@@ -210,9 +200,6 @@ def updateEvent(request):
     pass
   
 def eventsList(request):
-    import time
-
-    # start = time.time()
     
     tbmItems = clsEventDetails.objects.filter(~Q(int_last_action = 0),Q(fk_user_id = int(request.session['intLoginUserId'])))
     lstAllItems = []
@@ -232,9 +219,6 @@ def eventsList(request):
         dctAllItems['intIfPaid'] = tbmEachItem.int_if_paid  
         dctAllItems['intEventLocation'] = tbmEachItem.int_event_location_type
         lstAllItems.append(dctAllItems)
-    # end = time.time()
-    # timeTaken = end - start
-    # print("Time Taken: --" ,timeTaken)
     return render(request,'eventsList.html',{'lstAllItems':lstAllItems})
 
 def deleteEvent(request):
@@ -263,10 +247,8 @@ def loadPaymentMethod(request):
    
     return render(request,'payment.html')
 
-
 # This is your test secret API key.
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
 
 def createCheckoutSession(request):
    
@@ -285,8 +267,7 @@ def createCheckoutSession(request):
                 'unit_amount':250000,
                 'product_data':{
                     'name':'Publishing Fee',
-                }
-                
+                }     
             },
             'quantity': 1,
         },
@@ -344,4 +325,3 @@ def my_webhook_view(request):
     
     
 
-# {{ request.session.strLoginActualName }}
