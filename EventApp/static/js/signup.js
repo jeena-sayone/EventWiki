@@ -1,6 +1,7 @@
 $(document).ready(function () {
     
-
+$("#divIdErrorContainer").empty()
+$("#divIdErrorContainer").hide()
 });
 
 
@@ -8,27 +9,31 @@ $(document).ready(function () {
 $('#btnIdSignup').click(function(event) {
     event.preventDefault();
     document.getElementById("btnIdSignup").disabled = true;
+    $("#divIdErrorContainer").empty()
     //validations
     if($.trim($('#txtIdUserActualName').val()) == ''){
-        alert("Name is Required");
+
+        $("#divIdErrorContainer").append("<P>Name is Required</p>");
         document.getElementById("btnIdSignup").disabled = false;
+        $("#divIdErrorContainer").show()
         return false;
     }
     if($.trim($('#txtIdPassword').val()) == ''){
-        alert("Password is Required");
+        $("#divIdErrorContainer").append("<P>Password is Required</p>");
         document.getElementById("btnIdSignup").disabled = false;
+        $("#divIdErrorContainer").show()
         return false;
     }
-    
+
     var testEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
     if (testEmail.test($.trim($('#txtIdEmail').val()))){
         //
     }else{
-        alert("Enter Valid Email Address");
+        $("#divIdErrorContainer").append("<P>Enter Valid Email Address</p>");
         document.getElementById("btnIdSignup").disabled = false;
+        $("#divIdErrorContainer").show()
         return false;
     }
-    
        
     // Build Signup Data array
     var arrSignupData = {

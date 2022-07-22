@@ -20,7 +20,7 @@ from django.core.files.storage import default_storage
 from django.conf import settings
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-
+from .forms import loginForm
 
 # Create your views here.
 # Home
@@ -50,12 +50,14 @@ def index(request):
 
 # Login
 def login(request):
+
+    form = loginForm()
     
     if request.method == 'POST':
-        strEmail = request.POST.get('txtEmail')
-        strPassword = request.POST.get('txtPassword')
+        form = loginForm(request.POST)
+        if form.is_valid():
+            tbmUser = clsUser.objects.filter(Q(vhr_email__iexact=form.cleaned_data['email']), Q(vhr_password__iexact=form.cleaned_data['password']))
         # // Check User Authentication
-        tbmUser = clsUser.objects.filter(Q(vhr_email__iexact=strEmail),Q(vhr_password__iexact=strPassword))
         try:
             if tbmUser[0]:
                 request.session['intLoginUserId'] = tbmUser[0].pk_user_id
@@ -67,7 +69,10 @@ def login(request):
             messages.error(request,'Invalid Email Or Password.')
             return redirect('login')
     else:
-        return render(request,'login.html')
+        return render(request,'login.html',{'form':form})
+
+    return render(request,'login.html',{'form':form})
+
 #Logout
 def logout(request):
     
@@ -265,7 +270,7 @@ def createCheckoutSession(request):
         {
             'price_data' : {
                 'currency': 'inr',
-                'unit_amount':250000,
+                'unit_amount':100,
                 'product_data':{
                     'name':'Publishing Fee',
                 }     
@@ -294,14 +299,18 @@ def paymentCancel(request):
 
 @csrf_exempt
 def my_webhook_view(request):
+    pprint("1111111111")
     payload = request.body
+    print(payload)
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
     try:
+        pprint("222222222")
         event = stripe.Webhook.construct_event(
         payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
     except ValueError as e:
+        pprint("###########")
         # Invalid payload
         return HttpResponse(status=400)
     except stripe.error.SignatureVerificationError as e:
