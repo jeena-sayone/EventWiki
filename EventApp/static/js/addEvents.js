@@ -47,15 +47,19 @@ function fnLoadEventDataToGui(objJsonEventDetails){
 $('#btnIdCreateEvent').click(function(event) {
     event.preventDefault();
     document.getElementById("btnIdCreateEvent").disabled = true;
+    $("#divIdErrorContainer").empty()
+    $("#divIdErrorContainer").hide()
     //Check General validations
     if($.trim($('#txtIdEventName').val()) == ''){
-        alert("Event Name is Required");
+        $("#divIdErrorContainer").append("<P>Event Name is Required/p>");
         document.getElementById("btnIdCreateEvent").disabled = false;
+        $("#divIdErrorContainer").show();
         return false;
     }
     if($.trim($('#strEventStartTime').val()) == ''){
-        alert("Event Start Date and Time is Required");
+    $   ("#divIdErrorContainer").append("Event Start Date and Time is Required");
         document.getElementById("btnIdCreateEvent").disabled = false;
+        $("#divIdErrorContainer").show();
         return false;
     }
     if($.trim($('#strEventEndTime').val()) == ''){
@@ -150,6 +154,8 @@ function onNewButtonCase(){
     intGlobalPkEventsId = 0;
     $("#btnIdCreateEvent").show();
     $("#btnIdUpdateEvent").hide();
+    $("#divIdErrorContainer").empty()
+    $("#divIdErrorContainer").hide()
 }
 
 // On create event Button Click

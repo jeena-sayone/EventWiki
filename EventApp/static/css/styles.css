@@ -11801,3 +11801,10 @@ section#contact form#formIdLogin :-ms-input-placeholder {
 .btnInline{
 
 } */
+
+.errorContainer {
+
+ border:2px solid red;
+  color: red;
+}
+

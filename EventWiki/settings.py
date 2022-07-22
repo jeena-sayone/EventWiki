@@ -23,9 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-l5ty@hl3!b7o)op6+#o7^(o(w(om-81-3l!ybp%n!0%j@8k!yb'
-STRIPE_PUBLIC_KEY = 'pk_test_51LMRNeSH0vrOjKwMLvKa4UG4ER3xGdbA3jydTQo4vWsOErU2CgiUXbGG72smJuEsDhWfFm5atVcsA7qlyJyeQ0CC00vEVYODCK'
-STRIPE_SECRET_KEY = 'sk_test_51LMRNeSH0vrOjKwMfvYQp0H5kc085AtTVGtNF5iWwQL1w4kyDZV25vH2zphNrlLiAvGvlcN29kmuqhCbzbUgozOo00PdLYQpXX'
-STRIPE_WEBHOOK_SECRET = 'whsec_f0ca155536b7dab732c87954f8ea2e2e37e626312e1810d355a0562cb0c3c8df'
+# STRIPE_PUBLIC_KEY = 'pk_test_51LMRNeSH0vrOjKwMLvKa4UG4ER3xGdbA3jydTQo4vWsOErU2CgiUXbGG72smJuEsDhWfFm5atVcsA7qlyJyeQ0CC00vEVYODCK'
+STRIPE_PUBLIC_KEY = 'pk_test_51LNu1lSJCpf53jI4Y2aaG6rXcmm66LFUtK2pI5mn013rJbwALs4KuXmK7V51N1ifxlfAULOG8miWgKKx358u0F7A00DyHznUXF'
+# STRIPE_SECRET_KEY = 'sk_test_51LMRNeSH0vrOjKwMfvYQp0H5kc085AtTVGtNF5iWwQL1w4kyDZV25vH2zphNrlLiAvGvlcN29kmuqhCbzbUgozOo00PdLYQpXX'
+STRIPE_SECRET_KEY = 'sk_test_51LNu1lSJCpf53jI4lA2KPUi4b7JVV4KJX43Ky67di4L4g03Mjs43huXhBFlUJYkOzI4XHIOTHGpNEf72RoSpND7H00K88JqEjs'
+# STRIPE_WEBHOOK_SECRET = 'whsec_cacdafe76d2023ec9193aa82a4fbd72dcf7227679cdb43293c90ab6ac377b8f1'
+STRIPE_WEBHOOK_SECRET = 'whsec_cacdafe76d2023ec9193aa82a4fbd72dcf7227679cdb43293c90ab6ac377b8f1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = TRUE
 
@@ -42,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
