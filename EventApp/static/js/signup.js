@@ -52,18 +52,13 @@ $('#btnIdSignup').click(function(event) {
         },
         success: function (data) {
             if(data.strStatus=='ERROR') {
-                //alert(data.strMessage);
-                $("#divIdErrorContainer").append(data.strMessage);
-                $("#divIdErrorContainer").show()
+                alert(data.strMessage);
                 
             }
             else if(data.strStatus=='SUCCESS') {
-                //alert(data.strMessage);
-                window.open('login');
+                alert(data.strMessage);
+                window.open('login');              
             }
-
-
-
         }
 });
 
