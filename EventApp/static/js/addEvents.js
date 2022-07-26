@@ -51,35 +51,39 @@ $('#btnIdCreateEvent').click(function(event) {
     $("#divIdErrorContainer").hide()
     //Check General validations
     if($.trim($('#txtIdEventName').val()) == ''){
-        $("#divIdErrorContainer").append("<P>Event Name is Required/p>");
+        $("#divIdErrorContainer").append("<P>Event Name is Required</P>");
         document.getElementById("btnIdCreateEvent").disabled = false;
         $("#divIdErrorContainer").show();
         return false;
     }
     if($.trim($('#strEventStartTime').val()) == ''){
-    $   ("#divIdErrorContainer").append("Event Start Date and Time is Required");
+        $("#divIdErrorContainer").append("Event Start Date and Time is Required");
         document.getElementById("btnIdCreateEvent").disabled = false;
         $("#divIdErrorContainer").show();
         return false;
     }
     if($.trim($('#strEventEndTime').val()) == ''){
-        alert("Event End Date and Time is Required");
+        $("#divIdErrorContainer").append("Event End Date and Time is Required");
         document.getElementById("btnIdCreateEvent").disabled = false;
+        $("#divIdErrorContainer").show();
         return false;
     }
     if($.trim($('#txtIdEventLocation').val()) == ''){
-        alert("Event Location is Required");
+        $("#divIdErrorContainer").append("Event Location is Required");
         document.getElementById("btnIdCreateEvent").disabled = false;
+        $("#divIdErrorContainer").show();
         return false;
     }
     if($.trim($('#txaIdEventDesc').val()) == ''){
-        alert("Event Description is Required");
+        $("#divIdErrorContainer").append("Event Description is Required");
         document.getElementById("btnIdCreateEvent").disabled = false;
+        $("#divIdErrorContainer").show();
         return false;
     }
-    if($('#uploadFile')[0].files[0] == ''){
-        alert("Event Poster is Required");
+    if(typeof($('#uploadFile')[0].files[0])=='undefined'){
+         $("#divIdErrorContainer").append("Event Poster is Required");
         document.getElementById("btnIdCreateEvent").disabled = false;
+        $("#divIdErrorContainer").show();
         return false;
     }
     
@@ -125,7 +129,6 @@ function getDataFromGui(){
     var intEventLocation = parseInt($('#cmbIdEventLocation').val()); 
     var strEventLocation = $.trim($('#txtIdEventLocation').val());
     var strEventDescription = $.trim($('#txaIdEventDesc').val());
-    var strEventPoster = $('#txaIdEventDesc').val();
     var intLastAction = 0;//New Event
     var intIfPaid = 0;
     
@@ -138,7 +141,7 @@ function getDataFromGui(){
         'intEventLocation' : intEventLocation,
         'strEventLocation' : strEventLocation,
         'strEventDescription' : strEventDescription,
-        'strEventPoster' : strEventPoster,
+        'strEventPoster' : '',
         'intLastAction' : intLastAction,
         'intIfPaid' : intIfPaid
 }
@@ -165,33 +168,39 @@ $('#btnIdUpdateEvent').click(function(event) {
 
     //Check General validations
     if($.trim($('#txtIdEventName').val()) == ''){
-        alert("Event Name is Required");
+        $("#divIdErrorContainer").append("<P>Event Name is Required</P>");
         document.getElementById("btnIdUpdateEvent").disabled = false;
+        $("#divIdErrorContainer").show();
         return false;
     }
     if($.trim($('#strEventStartTime').val()) == ''){
-        alert("Event Start Date and Time is Required");
+        $("#divIdErrorContainer").append("Event Start Date and Time is Required");
         document.getElementById("btnIdUpdateEvent").disabled = false;
+        $("#divIdErrorContainer").show();
         return false;
     }
     if($.trim($('#strEventEndTime').val()) == ''){
-        alert("Event End Date and Time is Required");
+        $("#divIdErrorContainer").append("Event End Date and Time is Required");
         document.getElementById("btnIdUpdateEvent").disabled = false;
+        $("#divIdErrorContainer").show();
         return false;
     }
     if($.trim($('#txtIdEventLocation').val()) == ''){
-        alert("Event Location is Required");
+        $("#divIdErrorContainer").append("Event Location is Required");
         document.getElementById("btnIdUpdateEvent").disabled = false;
+        $("#divIdErrorContainer").show();
         return false;
     }
     if($.trim($('#txaIdEventDesc').val()) == ''){
-        alert("Event Description is Required");
+        $("#divIdErrorContainer").append("Event Description is Required");
         document.getElementById("btnIdUpdateEvent").disabled = false;
+        $("#divIdErrorContainer").show();
         return false;
     }
     if(typeof($('#uploadFile')[0].files[0])=='undefined'){
-        alert("Event Poster is Required");
+         $("#divIdErrorContainer").append("Event Poster is Required");
         document.getElementById("btnIdUpdateEvent").disabled = false;
+        $("#divIdErrorContainer").show();
         return false;
     }
 
@@ -222,7 +231,9 @@ $('#btnIdUpdateEvent').click(function(event) {
                 alert('Event Updated successfully');
                 window.open('eventsList');
             }else{
-                alert('Event Update Error');
+
+                $("#divIdErrorContainer").append("Event Update Error");
+                $("#divIdErrorContainer").show();
             }
         }
 });
