@@ -32,7 +32,7 @@ STRIPE_WEBHOOK_SECRET = 'whsec_cacdafe76d2023ec9193aa82a4fbd72dcf7227679cdb43293
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = TRUE
 
-ALLOWED_HOSTS = ['eventwiki.herokuapp.com','127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
