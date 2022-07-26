@@ -22,7 +22,7 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from .forms import loginForm
 from django.core.paginator import Paginator
-
+from django.views import View
 
 # Create your views here.
 # Home
@@ -58,27 +58,51 @@ def index(request):
     return render(request,'index.html',{'lstAllItems':all_items_list,'events':events,'nums':nums})
 
 # Login
-def login(request):
-    form = loginForm()
-    if request.method == 'POST':
+# def login(request):
+#     form = loginForm()
+#     if request.method == 'POST':
+#         form = loginForm(request.POST)
+#         if form.is_valid():
+#             database_user = clsUser.objects.filter(Q(vhr_email__iexact=form.cleaned_data['email']), Q(vhr_password__iexact=form.cleaned_data['password']))
+#         # // Check User Authentication
+#         try:
+#             if database_user[0]:
+#                 request.session['intLoginUserId'] = database_user[0].pk_user_id
+#                 request.session['strLoginUserName'] = database_user[0].vhr_user_name
+#                 request.session['strEmail'] = database_user[0].vhr_email
+#                 messages.success(request,'Signin Success!')
+#                 return redirect('eventsList')
+#         except Exception as err:
+#             messages.error(request,'Invalid Email Or Password.')
+#             return redirect('login')
+#     else:
+#         return render(request,'login.html',{'form':form})
+#
+#     return render(request,'login.html',{'form':form})
+
+
+class LoginClass(View):
+    form_class = loginForm
+
+    def get(self, request):
+        return render(request, 'login.html', {'form': self.form_class()})
+
+    def post(self, request):
         form = loginForm(request.POST)
         if form.is_valid():
-            database_user = clsUser.objects.filter(Q(vhr_email__iexact=form.cleaned_data['email']), Q(vhr_password__iexact=form.cleaned_data['password']))
+            database_user = clsUser.objects.filter(Q(vhr_email__iexact=form.cleaned_data['email']),
+                                                   Q(vhr_password__iexact=form.cleaned_data['password']))
         # // Check User Authentication
         try:
             if database_user[0]:
                 request.session['intLoginUserId'] = database_user[0].pk_user_id
                 request.session['strLoginUserName'] = database_user[0].vhr_user_name
                 request.session['strEmail'] = database_user[0].vhr_email
-                messages.success(request,'Signin Success!')
+                messages.success(request, 'Signin Success!')
                 return redirect('eventsList')
         except Exception as err:
-            messages.error(request,'Invalid Email Or Password.')
+            messages.error(request, 'Invalid Email Or Password.')
             return redirect('login')
-    else:
-        return render(request,'login.html',{'form':form})
-
-    return render(request,'login.html',{'form':form})
 
 #Logout
 def logout(request):
@@ -131,7 +155,7 @@ def add_event(request):
 
         response_dict = {'strStatus':''}
         response_dict = serverside_validation(create_event_data_list)
-        if response_dict['strStatus']=='ERROR':
+        if response_dict['strStatus'] == 'ERROR':
             response_json = json.dumps(response_dict)
             mimetype = 'application/json'
             return HttpResponse(response_json, mimetype)
@@ -140,7 +164,7 @@ def add_event(request):
         database_event_details = clsEventDetails.objects.filter(Q(vhr_event_name__iexact=create_event_data_list['strEventName']))
         try:
             if database_event_details[0]:
-                messages.error(request,'Event Already Exists.Please Choose Another Event Name!')
+                messages.error(request, 'Event Already Exists.Please Choose Another Event Name!')
                 response_dict['strStatus'] = 'ERROR'
         except Exception as err:
             database_event_details = clsEventDetails()
@@ -156,18 +180,18 @@ def add_event(request):
             database_event_details.int_if_paid = int(create_event_data_list['intIfPaid'])
             database_event_details.dat_created_datetime = datetime.datetime.now()
             database_event_details.save()
-            messages.success(request,'Event added successfully!')
+            messages.success(request, 'Event added successfully!')
             response_dict['strStatus'] = 'SUCCESS'
         
         # //Checking File Exist
-        file_directory_name = os.path.join('EventApp','static','attachment',file_name)
+        file_directory_name = os.path.join('EventApp', 'static', 'attachment', file_name)
         default_storage.save(file_directory_name, ContentFile(file.read()))
         
         response_json = json.dumps(response_dict)
         mimetype = 'application/json'
         return HttpResponse(response_json, mimetype)
     else:
-        return render(request,'addEvent.html')
+        return render(request, 'addEvent.html')
     pass
   
 @csrf_exempt 
