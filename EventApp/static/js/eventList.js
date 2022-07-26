@@ -9,26 +9,6 @@ function showAllEventsData(){
     $("#tbyIdListAllEvents").empty();
     for (var i = 0; i < arrGloHtmlAllEventsData.length; i++) {
 
-         var strPayment = '<a class="btn btn-primary" onclick = "fnLoadPayment(\''+ arrGloHtmlAllEventsData[i].intPkEventId +'\')" id="btnIdPayment_'+arrGloHtmlAllEventsData[i].intPkEventId+'" >Payment</a>';
-        if(arrGloHtmlAllEventsData[i].intIfPaid == 1){
-            var strPayment = 'Paid';
-        }
-    
-        var strTableRow = '<tr class = "trCls" id = "trId' + arrGloHtmlAllEventsData[i].intPkEventId +'">\n' +
-                            '<td><a target="_blank" href="static/attachment/'+arrGloHtmlAllEventsData[i].strEventPoster+'"><img class="thumbnail_poster" src="static/attachment/'+arrGloHtmlAllEventsData[i].strEventPoster+'" ></a></td>\n' +
-
-                            '<td id="tdIdSlNo'+arrGloHtmlAllEventsData[i].intPkEventId+'">' +  arrGloHtmlAllEventsData[i].strEventName+ '</td>\n' +
-                            '<td id="id' +arrGloHtmlAllEventsData[i].intPkEventId + '" >' +arrGloHtmlAllEventsData[i].strEventVenue + '</td>\n' +
-                            '<td>' +arrAllEventLocationType[arrGloHtmlAllEventsData[i].intEventLocation] + '</td>\n' +
-                            '<td>' +arrGloHtmlAllEventsData[i].strEventDescription + '</td>\n' +
-                            '<td>' +arrGloHtmlAllEventsData[i].strEventStartDateTime + '</td>\n' +
-                            '<td>' +arrGloHtmlAllEventsData[i].strEventEndDateTime + '</td>\n' +
-                             '<td>'+strPayment+'</td>\n' +
-                            '<td class="edit"><a href="#"  onclick="onEditIconClick(\''+ arrGloHtmlAllEventsData[i].intPkEventId +'\');" style="color: #212529;"><i class="fa  fa-pencil"></i></a></td>\n' +
-                            '<td class="delete"><a href="#"  onclick="onDeleteIconClick(\''+ arrGloHtmlAllEventsData[i].intPkEventId +'\',\''+ arrGloHtmlAllEventsData[i].strEventName +'\',\''+ arrGloHtmlAllEventsData[i].intLastAction +'\');" style="color: #212529;"><i class="fa fa-times"></i></a></td>\n' +
-                        '</tr>';
-                        $("#tbyIdListAllEvents").append(strTableRow);
-
         objGlobalAllEvents[arrGloHtmlAllEventsData[i].intPkEventId] = arrGloHtmlAllEventsData[i];
     }
 }
@@ -87,7 +67,7 @@ function onEditIconClick(intPkEventId){
     var objEventDetails = objGlobalAllEvents[intPkEventId];
     // # Set Session Data
     sessionStorage.setItem("objEventDetails", JSON.stringify(objEventDetails));
-    window.open('addEvent', '_self');
+    window.open('edit_event', '_self');
 }
 
 // Sites injection control
