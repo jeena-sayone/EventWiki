@@ -1,4 +1,4 @@
-var arrAllEventLocationType = ['','Pysical venue','Online','Recorded Events'];
+var arrAllEventLocationType = ['','Physical venue','Online','Recorded Events'];
 var objGlobalAllEvents = {};
 $(document).ready(function () {
     // Show List Data
@@ -23,6 +23,7 @@ function fnLoadPayment(intPkEventId){
 
 // List Delete Icon Click
 function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
+    $("#divIdMessages").empty()
 
     var arrDeleteEventData = new Array();
    
@@ -51,7 +52,8 @@ function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
             alert(data.strMessage)
         }
         else if(data.strStatus=='SUCCESS') {
-            alert(data.strMessage)
+            $("#divIdMessages").append(data.strMessage)
+            $('.toast').toast('show');
             // Remove record in List
             $('#trId' + intPkEventId).remove();
            //Remove deleted element in global array "objGloHtmlAllEventsData" using 'delete' method
@@ -65,10 +67,12 @@ function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
 
 //On Edit Icon Click Function
 function onEditIconClick(intPkEventId){
+    $("#divIdMessages").empty()
     var objEventDetails = objGlobalAllEvents[intPkEventId];
     // # Set Session Data
     sessionStorage.setItem("objEventDetails", JSON.stringify(objEventDetails));
     window.open('edit_event', '_self');
+
 }
 
 // Sites injection control

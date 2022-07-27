@@ -117,7 +117,8 @@ def signup(request):
     if request.method == 'POST':
         signup_data_json = request.POST.get('jsnSignupData')
         signup_data_list = json.loads(signup_data_json)
-        response_dict = {'strStatus':''}
+        response_dict = {'strStatus': ''}
+
         try:
              # // Check Already Exists
             database_user = clsUser.objects.filter(Q(vhr_email__iexact=signup_data_list['strEmail']))
@@ -144,7 +145,8 @@ def signup(request):
         return render(request,'signup.html')
     pass
 
-@csrf_exempt 
+
+@csrf_exempt
 def add_event(request):
     
     if request.method == 'POST':
@@ -153,7 +155,7 @@ def add_event(request):
         file_name = request.POST.get('strFileName')
         file = request.FILES['file']
 
-        response_dict = {'strStatus':''}
+        response_dict = {'strStatus': ''}
         response_dict = serverside_validation(create_event_data_list)
         if response_dict['strStatus'] == 'ERROR':
             response_json = json.dumps(response_dict)
@@ -193,7 +195,8 @@ def add_event(request):
     else:
         return render(request, 'addEvent.html')
     pass
-  
+
+
 @csrf_exempt 
 def updateEvent(request):
         
@@ -241,7 +244,8 @@ def updateEvent(request):
     else:
         return render(request,'addEvent.html')
     pass
-  
+
+
 def eventsList(request):
 
     event_location_type = ['', 'Physical venue', 'Online', 'Recorded Events']
@@ -276,13 +280,20 @@ def eventsList(request):
         page = request.GET.get('page')
         events = p.get_page(page)
         nums = "a" * events.paginator.num_pages
-    return render(request,'eventsList.html',{'lstAllItems':all_items_list, 'events': events, 'nums': nums})
+    return render(request, 'eventsList.html', {'lstAllItems': all_items_list, 'events': events, 'nums': nums})
+
 
 def deleteEvent(request):
     if request.method == 'POST':
         create_event_data_json = request.POST.get('jsnEventDeleteData')
         create_event_data_list = json.loads(create_event_data_json)
-        response_dict = {'strStatus':''}
+
+        response_dict = serverside_validation_delete(create_event_data_list)
+        if response_dict['strStatus'] == 'ERROR':
+            response_json = json.dumps(response_dict)
+            mimetype = 'application/json'
+            return HttpResponse(response_json, mimetype)
+
         try:
             database_event = clsEventDetails.objects.get(pk_event_id =create_event_data_list['intPkEventId'] )
             database_event.int_last_action = 0
@@ -299,9 +310,10 @@ def deleteEvent(request):
     else:
         return render(request,'eventsList.html')
 
+
 def serverside_validation(create_event_data_list):
 
-    response_dict = {'strStatus':''}
+    response_dict = {'strStatus': ''}
     if not create_event_data_list['strEventName']:
         response_dict['strMessage'] = 'Event Name is Required'
         response_dict['strStatus'] = 'ERROR'
@@ -330,6 +342,15 @@ def serverside_validation(create_event_data_list):
         response_dict['strStatus'] = 'ERROR'
         return response_dict
 
+    return response_dict
+
+
+def serverside_validation_delete(create_event_data_list):
+    response_dict = {'strStatus': ''}
+    if not create_event_data_list['intPkEventId']:
+        response_dict['strMessage'] = 'Delete Not Possible'
+        response_dict['strStatus'] = 'ERROR'
+        return response_dict
     return response_dict
 
 
@@ -382,13 +403,17 @@ def edit_event(request):
     else:
         return render(request, 'addEvent.html')
     pass
+
+
 @csrf_exempt
 def loadPaymentMethod(request):
    
     return render(request,'payment.html')
 
+
 # This is your test secret API key.
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
 
 def createCheckoutSession(request):
    

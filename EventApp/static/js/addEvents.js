@@ -99,7 +99,7 @@ $('#btnIdCreateEvent').click(function(event) {
     var jsnCreateEventData = JSON.stringify(arrCreateEventData);
     formData.append('arrCreateEventData', jsnCreateEventData);
     $.ajax({
-        url: 'addEvent',
+        url: 'add_event',
         type: 'post',
         data:formData,
         csrfmiddlewaretoken: csrftoken,
@@ -111,7 +111,10 @@ $('#btnIdCreateEvent').click(function(event) {
         success: function(data){
             if(data.strStatus == 'SUCCESS'){
                 onNewButtonCase();
-                alert('Event Added successfully');
+                $('.toast').toast('show');
+                $("#divIdMessages").append('Event Added successfully')
+
+
             }else{
                 alert('Event Add Error');
             }
@@ -158,6 +161,7 @@ function onNewButtonCase(){
     $("#btnIdCreateEvent").show();
     $("#btnIdUpdateEvent").hide();
     $("#divIdErrorContainer").empty()
+    $("#divIdMessages").empty();
     $("#divIdErrorContainer").hide()
 }
 
@@ -228,7 +232,8 @@ $('#btnIdUpdateEvent').click(function(event) {
         success: function(data){
             if(data.strStatus == 'SUCCESS'){
                 onNewButtonCase();
-                alert('Event Updated successfully');
+                $('.toast').toast('show');
+                $("#divIdMessages").append('Event Updated successfully')
                 window.open('eventsList');
             }else{
 

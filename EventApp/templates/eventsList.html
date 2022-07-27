@@ -43,6 +43,12 @@
               thumbnail_poster:hover {
                 box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
               }
+              .toast {
+                top: 10%;
+                left: 50%;
+                transform: translate(-50%, 0px);
+                z-index: 9999;
+              }
         </style>
         <script>
             var arrGloHtmlAllEventsData = JSON.parse(JSON.stringify(eval("(" + "{{lstAllItems|safe}}" + ")")));  
@@ -157,6 +163,14 @@
                     </section>
                 </div>          
         </section>
+        <div class="toast align-items-center text-white bg-success border-0" style="position: absolute;" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body" id="divIdMessages">
+            <!-- messages -->
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
        
         <!-- Footer-->
         <footer class="footer py-4">
@@ -186,11 +200,13 @@
 
         <!-- Alertify Javascript File -->
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-        {% for flashmsg in messages %}
-            <script>        
-                alertify.set('notifier','position', 'top-center');
-                alertify.success('{{flashmsg}}');
-            </script>
-        {%endfor%} 
+<!--        {% for flashmsg in messages %}-->
+<!--            <script>        -->
+<!--                alertify.set('notifier','position', 'top-center');-->
+<!--                alertify.success('{{flashmsg}}');-->
+<!--            </script>-->
+<!--        {%endfor%}-->
+
+
     </body>
 </html>
