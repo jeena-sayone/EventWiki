@@ -23,6 +23,7 @@ function fnLoadPayment(intPkEventId){
 
 // List Delete Icon Click
 function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
+
     var arrDeleteEventData = new Array();
    
     arrDeleteEventData = {
@@ -32,7 +33,7 @@ function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
    }
 
  // Y/N
- if (!(confirm('Do you want to delete the Event ') + strEventName + '"?')) {
+ if (!(confirm('Do you want to delete the Event ?'))) {
     return;
 }
 

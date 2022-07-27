@@ -125,7 +125,8 @@
                                 {% endif %}
                             </td>
                             <td class="edit" style="text-align: center;"><a href="#"  onclick="onEditIconClick({{ objEvents.intPkEventId }});" style="color: #212529;"><i class="fa  fa-pencil"></i></a></td>
-                            <td class="delete" style="text-align: center;"><a href="#"  onclick="onDeleteIconClick({{ objEvents.intPkEventId }},{{ objEvents.strEventName }},{{ objEvents.intLastAction }});" style="color: #212529;"><i class="fa fa-times"></i></a></td>
+                            <td class="delete" style="text-align: center;"><a href="#" onclick="onDeleteIconClick('{{ objEvents.intPkEventId }}', '{{ objEvents.strEventName }}', '{{ objEvents.intLastAction }}');" style="color: #212529;"><i class="fa fa-times"></i></a></td>
+<!--                            <td class="delete" style="text-align: center;"><a href="#" onclick="onDeleteIconClick(\'' + {{ objEvents.intPkEventId }} + '\',\'' + {{ objEvents.strEventName }} + '\',\'' + {{ objEvents.intLastAction }} + '\';" style="color: #212529;"><i class="fa fa-times"></i></a></td>-->
                             </tr>
                             {% endfor %}
                             </tbody>

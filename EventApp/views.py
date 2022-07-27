@@ -51,7 +51,7 @@ def index(request):
 
     # Set up Pagination
     database_items = all_items_list
-    p = Paginator(database_items,2)
+    p = Paginator(database_items, 3)
     page = request.GET.get('page')
     events = p.get_page(page)
     nums = "a" * events.paginator.num_pages
@@ -403,7 +403,7 @@ def createCheckoutSession(request):
         {
             'price_data' : {
                 'currency': 'inr',
-                'unit_amount':100,
+                'unit_amount':10000,
                 'product_data':{
                     'name':'Publishing Fee',
                 }     
