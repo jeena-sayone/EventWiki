@@ -4,12 +4,12 @@ from django.urls import reverse
 import json
 import os
 import datetime
-from django.utils import timezone
-
-from requests import request, session
 import stripe
+
+from django.utils import timezone
+from requests import request, session
 from pprint import pprint
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.contrib import messages
 from django.http import HttpResponse
@@ -24,10 +24,11 @@ from .forms import loginForm
 from django.core.paginator import Paginator
 from django.views import View
 
+
 # Create your views here.
 # Home
 def index(request):
-    #list all events
+    #  list all events
     event_location_type_list = ['','Physical venue','Online','Recorded Events']
     database_items = clsEventDetails.objects.filter(~Q(int_last_action = 0),Q(dat_event_start_date_time__gte = datetime.datetime.now()), Q(int_if_paid = 1)).order_by('dat_event_start_date_time')
     all_items_list = []
@@ -50,12 +51,15 @@ def index(request):
         all_items_list.append(all_items_dict)
 
     # Set up Pagination
-    database_items = all_items_list
-    p = Paginator(database_items, 3)
-    page = request.GET.get('page')
-    events = p.get_page(page)
-    nums = "a" * events.paginator.num_pages
-    return render(request,'index.html',{'lstAllItems':all_items_list,'events':events,'nums':nums})
+    # database_items = all_items_list
+    events = ''
+    nums = ''
+    if len(all_items_list):
+        p = Paginator(all_items_list, 3)
+        page = request.GET.get('page')
+        events = p.get_page(page)
+        nums = "a" * events.paginator.num_pages
+    return render(request, 'index.html', {'lstAllItems': all_items_list, 'events': events, 'nums': nums})
 
 # Login
 # def login(request):
@@ -71,7 +75,7 @@ def index(request):
 #                 request.session['strLoginUserName'] = database_user[0].vhr_user_name
 #                 request.session['strEmail'] = database_user[0].vhr_email
 #                 messages.success(request,'Signin Success!')
-#                 return redirect('eventsList')
+#                 return redirect('events_list')
 #         except Exception as err:
 #             messages.error(request,'Invalid Email Or Password.')
 #             return redirect('login')
@@ -99,10 +103,11 @@ class LoginClass(View):
                 request.session['strLoginUserName'] = database_user[0].vhr_user_name
                 request.session['strEmail'] = database_user[0].vhr_email
                 messages.success(request, 'Signin Success!')
-                return redirect('eventsList')
+                return redirect('events_list')
         except Exception as err:
             messages.error(request, 'Invalid Email Or Password.')
             return redirect('login')
+
 
 #Logout
 def logout(request):
@@ -111,6 +116,7 @@ def logout(request):
     request.session['strEmail'] = ''
     # request.session.flush()
     return redirect('index')
+
 
 # Login
 def signup(request):
@@ -137,6 +143,7 @@ def signup(request):
             database_new_user_obj.save()
             response_dict['strStatus'] = 'SUCCESS'
             response_dict['strMessage'] = 'Sign up successfully!'
+            messages.success(request, 'Signup Successfully!')
            
         response_json = json.dumps(response_dict)
         mimetype = 'application/json'
@@ -156,7 +163,7 @@ def add_event(request):
         file = request.FILES['file']
 
         response_dict = {'strStatus': ''}
-        response_dict = serverside_validation(create_event_data_list)
+        response_dict = serverside_validation(request,create_event_data_list)
         if response_dict['strStatus'] == 'ERROR':
             response_json = json.dumps(response_dict)
             mimetype = 'application/json'
@@ -198,7 +205,7 @@ def add_event(request):
 
 
 @csrf_exempt 
-def updateEvent(request):
+def update_event(request):
         
     if request.method == 'POST':
         create_event_data_json = request.POST.get('arrCreateEventData')
@@ -206,8 +213,8 @@ def updateEvent(request):
         file_name = request.POST.get('strFileName')
         file = request.FILES['file']
         
-        response_dict = {'strStatus':''}
-        response_dict = serverside_validation(create_event_data_list)
+        response_dict = {'strStatus': ''}
+        response_dict = serverside_validation(request, create_event_data_list)
         if response_dict['strStatus'] == 'ERROR':
             response_json = json.dumps(response_dict)
             mimetype = 'application/json'
@@ -246,7 +253,7 @@ def updateEvent(request):
     pass
 
 
-def eventsList(request):
+def events_list(request):
 
     event_location_type = ['', 'Physical venue', 'Online', 'Recorded Events']
 
@@ -272,35 +279,33 @@ def eventsList(request):
         all_items_dict['strPublicationDetails'] = 'Unpublished.Payment needed(₹100)'
         if each_item.int_if_paid:
             all_items_dict['strPublicationDetails'] = 'Published'
-
         all_items_list.append(all_items_dict)
-
-        database_items = all_items_list
-        p = Paginator(database_items, 3)
+    events = ''
+    nums = ''
+    if len(all_items_list):
+        p = Paginator(all_items_list, 3)
         page = request.GET.get('page')
         events = p.get_page(page)
         nums = "a" * events.paginator.num_pages
     return render(request, 'eventsList.html', {'lstAllItems': all_items_list, 'events': events, 'nums': nums})
 
 
-def deleteEvent(request):
+def delete_event(request):
     if request.method == 'POST':
         create_event_data_json = request.POST.get('jsnEventDeleteData')
         create_event_data_list = json.loads(create_event_data_json)
 
-        response_dict = serverside_validation_delete(create_event_data_list)
+        response_dict = serverside_validation_delete(request, create_event_data_list)
         if response_dict['strStatus'] == 'ERROR':
             response_json = json.dumps(response_dict)
             mimetype = 'application/json'
             return HttpResponse(response_json, mimetype)
-
         try:
             database_event = clsEventDetails.objects.get(pk_event_id =create_event_data_list['intPkEventId'] )
             database_event.int_last_action = 0
             database_event.save()
             response_dict['strStatus'] = 'SUCCESS'
             response_dict['strMessage'] = 'Event deleted successfully!'
-            
         except:
             response_dict['strStatus'] = 'ERROR'
             response_dict['strMessage'] = 'Delete not Possible.Try Again'
@@ -308,10 +313,10 @@ def deleteEvent(request):
         mimetype = 'application/json'
         return HttpResponse(response_json, mimetype)
     else:
-        return render(request,'eventsList.html')
+        return render(request, 'eventsList.html')
 
 
-def serverside_validation(create_event_data_list):
+def serverside_validation(request,create_event_data_list):
 
     response_dict = {'strStatus': ''}
     if not create_event_data_list['strEventName']:
@@ -342,20 +347,35 @@ def serverside_validation(create_event_data_list):
         response_dict['strStatus'] = 'ERROR'
         return response_dict
 
+    if create_event_data_list['intPkEventsId']:  # Update mode
+        database_update_event = clsEventDetails.objects.get(pk_event_id=create_event_data_list['intPkEventsId'])
+        if database_update_event.fk_user_id != request.session['intLoginUserId']:
+            response_dict['strMessage'] = 'Update Not Possible.An event can be updated by the creator only.'
+            response_dict['strStatus'] = 'ERROR'
+            return response_dict
     return response_dict
 
 
-def serverside_validation_delete(create_event_data_list):
+def serverside_validation_delete(request, create_event_data_list):
     response_dict = {'strStatus': ''}
     if not create_event_data_list['intPkEventId']:
         response_dict['strMessage'] = 'Delete Not Possible'
         response_dict['strStatus'] = 'ERROR'
         return response_dict
+    try:
+        database_delete_event = clsEventDetails.objects.get(pk_event_id=create_event_data_list['intPkEventId'])
+        if database_delete_event.fk_user_id != request.session['intLoginUserId']:
+            response_dict['strMessage'] = 'Delete Not Possible.An event can be deleted by the creator only.'
+            response_dict['strStatus'] = 'ERROR'
+            return response_dict
+    except:
+        pass
+
     return response_dict
 
 
 @csrf_exempt
-def edit_event(request):
+def edit_event(request, key_id=''):
     if request.method == 'POST':
         create_event_data_json = request.POST.get('arrCreateEventData')
         create_event_data_list = json.loads(create_event_data_json)

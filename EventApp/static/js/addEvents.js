@@ -1,21 +1,7 @@
 var intGlobalPkEventsId = 0;
 $(document).ready(function () {
     // focus on first field
-    $("#txtIdEventName").focus()
-    //Date Picker
-    // $(function () {
-    //     $('#datetimepicker6').datetimepicker();
-    //     $('#datetimepicker7').datetimepicker({
-    // useCurrent: false //Important! See issue #1075
-    // });
-    //     $("#datetimepicker6").on("dp.change", function (e) {
-    //         $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
-    //     });
-    //     $("#datetimepicker7").on("dp.change", function (e) {
-    //         $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
-    //     });
-    // });
-
+    $("#txtIdEventName").focus();
     onNewButtonCase();
    
     //On Update Mode
@@ -49,6 +35,7 @@ $('#btnIdCreateEvent').click(function(event) {
     document.getElementById("btnIdCreateEvent").disabled = true;
     $("#divIdErrorContainer").empty()
     $("#divIdErrorContainer").hide()
+    $("#divIdMessages").empty();
     //Check General validations
     if($.trim($('#txtIdEventName').val()) == ''){
         $("#divIdErrorContainer").append("<P>Event Name is Required</P>");
@@ -99,7 +86,7 @@ $('#btnIdCreateEvent').click(function(event) {
     var jsnCreateEventData = JSON.stringify(arrCreateEventData);
     formData.append('arrCreateEventData', jsnCreateEventData);
     $.ajax({
-        url: 'add_event',
+        url: '/add_event',
         type: 'post',
         data:formData,
         csrfmiddlewaretoken: csrftoken,
@@ -116,7 +103,8 @@ $('#btnIdCreateEvent').click(function(event) {
 
 
             }else{
-                alert('Event Add Error');
+                $('.toast').toast('show');
+                $("#divIdMessages").append('Event Add Error')
             }
         }
 });
@@ -168,6 +156,9 @@ function onNewButtonCase(){
 // On create event Button Click
 $('#btnIdUpdateEvent').click(function(event) {
     event.preventDefault();
+    $("#divIdErrorContainer").empty()
+    $("#divIdMessages").empty();
+    $("#divIdErrorContainer").hide()
     document.getElementById("btnIdUpdateEvent").disabled = true;
 
     //Check General validations
@@ -220,7 +211,7 @@ $('#btnIdUpdateEvent').click(function(event) {
     var jsnCreateEventData = JSON.stringify(arrCreateEventData);
     formData.append('arrCreateEventData', jsnCreateEventData);
     $.ajax({
-        url: 'updateEvent',
+        url: '/update_event',
         type: 'POST',
         data:formData,
         csrfmiddlewaretoken: csrftoken,
@@ -234,11 +225,11 @@ $('#btnIdUpdateEvent').click(function(event) {
                 onNewButtonCase();
                 $('.toast').toast('show');
                 $("#divIdMessages").append('Event Updated successfully')
-                window.open('eventsList');
+                window.open('/events_list');
             }else{
 
-                $("#divIdErrorContainer").append("Event Update Error");
-                $("#divIdErrorContainer").show();
+                $('.toast').toast('show');
+                $("#divIdMessages").append(data.strMessage)
             }
         }
 });

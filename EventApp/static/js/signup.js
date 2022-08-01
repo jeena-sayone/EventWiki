@@ -42,7 +42,6 @@ $('#btnIdSignup').click(function(event) {
         'strPassword' : $.trim($('#txtIdPassword').val())
 }
     var jsnSignupData = JSON.stringify(arrSignupData);
-    console.log(jsnSignupData)
     $.ajax({
         type: 'POST',
         url: 'signup',
@@ -52,18 +51,13 @@ $('#btnIdSignup').click(function(event) {
         },
         success: function (data) {
             if(data.strStatus=='ERROR') {
-                //alert(data.strMessage);
                 $("#divIdErrorContainer").append(data.strMessage);
                 $("#divIdErrorContainer").show()
                 
             }
             else if(data.strStatus=='SUCCESS') {
-                //alert(data.strMessage);
-                window.open('login');
+                window.open('login','_self');
             }
-
-
-
         }
 });
 

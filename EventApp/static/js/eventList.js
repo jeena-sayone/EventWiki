@@ -42,18 +42,20 @@ function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
  var jsnEventDeleteData = JSON.stringify(arrDeleteEventData)
  $.ajax({
     type: 'POST',
-    url: 'deleteEvent',
+    url: '/delete_event',
     dataType: 'json',
     data: {'jsnEventDeleteData' : jsnEventDeleteData,
            'csrfmiddlewaretoken' : csrftoken,
     },
     success: function (data) {
         if(data.strStatus=='ERROR') {
-            alert(data.strMessage)
+            $('.toast').toast('show');
+            $("#divIdMessages").append(data.strMessage)
         }
         else if(data.strStatus=='SUCCESS') {
-            $("#divIdMessages").append(data.strMessage)
             $('.toast').toast('show');
+            $("#divIdMessages").append(data.strMessage)
+
             // Remove record in List
             $('#trId' + intPkEventId).remove();
            //Remove deleted element in global array "objGloHtmlAllEventsData" using 'delete' method
@@ -71,7 +73,7 @@ function onEditIconClick(intPkEventId){
     var objEventDetails = objGlobalAllEvents[intPkEventId];
     // # Set Session Data
     sessionStorage.setItem("objEventDetails", JSON.stringify(objEventDetails));
-    window.open('edit_event', '_self');
+    window.open('edit-event/id='+intPkEventId, '_self');
 
 }
 

@@ -43,7 +43,7 @@
                            
                             <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
                             {% if request.session.intLoginUserId %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'eventsList' %}">MY EVENTS</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'events_list' %}">MY EVENTS</a></li>
 
                             <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
                             <li class="nav-item"><a class="nav-link" href=""><i class="fa fa-user"></i> {{request.session.strLoginUserName}}</a></li>
@@ -124,7 +124,7 @@
                         <div class="row text-center" style="margin-right: auto; margin-left: auto; display: block;">
                                     <button class="btn btn-primary" id="btnIdCreateEvent" type="submit" style="width: auto;">CREATE</button>
                                     <button class="btn btn-primary" id="btnIdUpdateEvent" type="submit" style="width: auto;">UPDATE</button>
-                                    <a style="text-decoration: none;" href={% url 'eventsList' %}>Cancel</a>
+                                    <a style="text-decoration: none;" href={% url 'events_list' %}>Cancel</a>
                         </div>
 
                            
