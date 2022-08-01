@@ -225,7 +225,7 @@ $('#btnIdUpdateEvent').click(function(event) {
                 onNewButtonCase();
                 $('.toast').toast('show');
                 $("#divIdMessages").append('Event Updated successfully')
-                window.open('/events_list','_self'));
+                window.open('/events_list','_self');
             }else{
 
                 $('.toast').toast('show');
