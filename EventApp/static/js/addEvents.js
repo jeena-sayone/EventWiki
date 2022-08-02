@@ -1,4 +1,5 @@
 var intGlobalPkEventsId = 0;
+var objJsonEventDetails = {};
 $(document).ready(function () {
     // focus on first field
     $("#txtIdEventName").focus();
@@ -7,14 +8,14 @@ $(document).ready(function () {
     //On Update Mode
     var objEventDetails = sessionStorage.getItem("objEventDetails");
     if(objEventDetails){
-        var objJsonEventDetails = JSON.parse(objEventDetails);
-        fnLoadEventDataToGui(objJsonEventDetails);
+        objJsonEventDetails = JSON.parse(objEventDetails);
+        fnLoadEventDataToGui();
         sessionStorage.setItem("objEventDetails", '');
     }
 });
 
 
-function fnLoadEventDataToGui(objJsonEventDetails){
+function fnLoadEventDataToGui(){
     $("#btnIdCreateEvent").hide();
     $("#btnIdUpdateEvent").show();
     intGlobalPkEventsId = objJsonEventDetails.intPkEventId;
@@ -22,7 +23,6 @@ function fnLoadEventDataToGui(objJsonEventDetails){
     $('#strEventEndTime').val(objJsonEventDetails.strEventEndDateTime);
     $('#strEventStartTime').val(objJsonEventDetails.strEventStartDateTime);
     $('#cmbIdEventLocation').val(objJsonEventDetails.intEventLocation);
-
     $('#txtIdEventLocation').val(objJsonEventDetails.strEventVenue);
     $('#txaIdEventDesc').val(objJsonEventDetails.strEventDescription);
     //$('#uploadFile').val(objJsonEventDetails.strEventPoster);
@@ -200,7 +200,18 @@ $('#btnIdUpdateEvent').click(function(event) {
     }
 
     // Get All Data from GUI
-    var arrCreateEventData = getDataFromGui();
+    var arrCreateEventData = {
+        'intPkEventsId':intGlobalPkEventsId,
+        'strEventName'    : $.trim($('#txtIdEventName').val()),
+        'strEventStartTime'     : $('#strEventStartTime').val(),
+        'strEventEndTime' : $('#strEventEndTime').val(),
+        'intEventLocation' : parseInt($('#cmbIdEventLocation').val()),
+        'strEventLocation' : $.trim($('#txtIdEventLocation').val()),
+        'strEventDescription' : $.trim($('#txaIdEventDesc').val()),
+        'strEventPoster' : '',
+        'intLastAction' : objJsonEventDetails.intLastAction,
+        'intIfPaid' : objJsonEventDetails.intIfPaid
+}
 
     var fileSize = ($('#uploadFile')[0].files[0].size/1024);
     var fileName = $('#uploadFile')[0].files[0].name;

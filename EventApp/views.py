@@ -316,7 +316,7 @@ def delete_event(request):
         return render(request, 'eventsList.html')
 
 
-def serverside_validation(request,create_event_data_list):
+def serverside_validation(request, create_event_data_list):
 
     response_dict = {'strStatus': ''}
     if not create_event_data_list['strEventName']:
