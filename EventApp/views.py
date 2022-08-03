@@ -4,12 +4,12 @@ from django.urls import reverse
 import json
 import os
 import datetime
-from django.utils import timezone
-
-from requests import request, session
 import stripe
+
+from django.utils import timezone
+from requests import request, session
 from pprint import pprint
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.contrib import messages
 from django.http import HttpResponse
@@ -21,10 +21,17 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from .forms import loginForm
+<<<<<<< HEAD
+=======
+from django.core.paginator import Paginator
+from django.views import View
+
+>>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
 
 # Create your views here.
 # Home
 def index(request):
+<<<<<<< HEAD
     #list all events
     lstAllEventLocationType = ['','Pysical venue','Online','Recorded Events']
     tbmItems = clsEventDetails.objects.filter(~Q(int_last_action = 0),Q(dat_event_start_date_time__gte = datetime.datetime.now()), Q(int_if_paid = 1)).order_by('dat_event_start_date_time')
@@ -65,13 +72,88 @@ def login(request):
                 request.session['strEmail'] = tbmUser[0].vhr_email
                 messages.success(request,'Signin Success!')
                 return redirect('eventsList')
-        except Exception as err:
-            messages.error(request,'Invalid Email Or Password.')
-            return redirect('login')
-    else:
-        return render(request,'login.html',{'form':form})
+=======
+    #  list all events
+    event_location_type_list = ['','Physical venue','Online','Recorded Events']
+    database_items = clsEventDetails.objects.filter(~Q(int_last_action = 0),Q(dat_event_start_date_time__gte = datetime.datetime.now()), Q(int_if_paid = 1)).order_by('dat_event_start_date_time')
+    all_items_list = []
+    date_output_format = '%Y-%m-%d %H:%M:%S'
+    for each_item in database_items:
+        all_items_dict = dict()
+        all_items_dict['intPkEventId'] = each_item.pk_event_id
+        all_items_dict['intFkUserId'] = each_item.fk_user_id
+        all_items_dict['strEventStartDateTime'] = each_item.dat_event_start_date_time.strftime(date_output_format)
+        all_items_dict['strEventEndDateTime'] = each_item.dat_event_end_date_time.strftime(date_output_format)
+        all_items_dict['strEventVenue'] = each_item.vhr_event_venue
+        all_items_dict['strEventDescription'] = each_item.vhr_event_description
+        all_items_dict['strEventPoster'] = 'attachment/'+each_item.vhr_event_file_upload
+        all_items_dict['strCreatedDateTime'] = each_item.dat_created_datetime.strftime(date_output_format)
+        all_items_dict['intLastAction'] = each_item.int_last_action
+        all_items_dict['intIfPaid'] = each_item.int_if_paid
+        all_items_dict['intEventLocation'] = each_item.int_event_location_type
+        all_items_dict['strEventType'] = event_location_type_list[each_item.int_event_location_type]
+        all_items_dict['strEventName'] = each_item.vhr_event_name
+        all_items_list.append(all_items_dict)
 
-    return render(request,'login.html',{'form':form})
+    # Set up Pagination
+    # database_items = all_items_list
+    events = ''
+    nums = ''
+    if len(all_items_list):
+        p = Paginator(all_items_list, 3)
+        page = request.GET.get('page')
+        events = p.get_page(page)
+        nums = "a" * events.paginator.num_pages
+    return render(request, 'index.html', {'lstAllItems': all_items_list, 'events': events, 'nums': nums})
+
+# Login
+# def login(request):
+#     form = loginForm()
+#     if request.method == 'POST':
+#         form = loginForm(request.POST)
+#         if form.is_valid():
+#             database_user = clsUser.objects.filter(Q(vhr_email__iexact=form.cleaned_data['email']), Q(vhr_password__iexact=form.cleaned_data['password']))
+#         # // Check User Authentication
+#         try:
+#             if database_user[0]:
+#                 request.session['intLoginUserId'] = database_user[0].pk_user_id
+#                 request.session['strLoginUserName'] = database_user[0].vhr_user_name
+#                 request.session['strEmail'] = database_user[0].vhr_email
+#                 messages.success(request,'Signin Success!')
+#                 return redirect('events_list')
+#         except Exception as err:
+#             messages.error(request,'Invalid Email Or Password.')
+#             return redirect('login')
+#     else:
+#         return render(request,'login.html',{'form':form})
+#
+#     return render(request,'login.html',{'form':form})
+
+
+class LoginClass(View):
+    form_class = loginForm
+
+    def get(self, request):
+        return render(request, 'login.html', {'form': self.form_class()})
+
+    def post(self, request):
+        form = loginForm(request.POST)
+        if form.is_valid():
+            database_user = clsUser.objects.filter(Q(vhr_email__iexact=form.cleaned_data['email']),
+                                                   Q(vhr_password__iexact=form.cleaned_data['password']))
+        # // Check User Authentication
+        try:
+            if database_user[0]:
+                request.session['intLoginUserId'] = database_user[0].pk_user_id
+                request.session['strLoginUserName'] = database_user[0].vhr_user_name
+                request.session['strEmail'] = database_user[0].vhr_email
+                messages.success(request, 'Signin Success!')
+                return redirect('events_list')
+>>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
+        except Exception as err:
+            messages.error(request, 'Invalid Email Or Password.')
+            return redirect('login')
+
 
 #Logout
 def logout(request):
@@ -82,13 +164,21 @@ def logout(request):
     # request.session.flush()
     return redirect('index')
 
+
 # Login
 def signup(request):
    
     if request.method == 'POST':
+<<<<<<< HEAD
         jsnSignupData = request.POST.get('jsnSignupData')
         lstSignupData = json.loads(jsnSignupData)
         dctResponse = {'strStatus':''}
+=======
+        signup_data_json = request.POST.get('jsnSignupData')
+        signup_data_list = json.loads(signup_data_json)
+        response_dict = {'strStatus': ''}
+
+>>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
         try:
              # // Check Already Exists
             tbmUser = clsUser.objects.filter(Q(vhr_email__iexact=lstSignupData['strEmail']))
@@ -99,6 +189,7 @@ def signup(request):
                 dctResponse['strMessage'] = 'User already exists!'
 
         except:
+<<<<<<< HEAD
             tbmNewUser = clsUser()
             tbmNewUser.vhr_user_name = lstSignupData['strActualName']
             tbmNewUser.vhr_email = lstSignupData['strEmail']
@@ -109,6 +200,19 @@ def signup(request):
             tbmNewUser.save()
             dctResponse['strStatus'] = 'SUCCESS'
             dctResponse['strMessage'] = 'Sign up successfully!'
+=======
+            database_new_user_obj = clsUser()
+            database_new_user_obj.vhr_user_name = signup_data_list['strActualName']
+            database_new_user_obj.vhr_email = signup_data_list['strEmail']
+            database_new_user_obj.vhr_password = signup_data_list['strPassword']
+            database_new_user_obj.int_if_admin = 0 # Not Admin
+            database_new_user_obj.dat_created_datetime =datetime.datetime.now()
+            database_new_user_obj.int_last_action = 1
+            database_new_user_obj.save()
+            response_dict['strStatus'] = 'SUCCESS'
+            response_dict['strMessage'] = 'Sign up successfully!'
+            messages.success(request, 'Signup Successfully!')
+>>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
            
         jsnResponse = json.dumps(dctResponse)
         mimetype = 'application/json'
@@ -117,19 +221,37 @@ def signup(request):
         return render(request,'signup.html')
     pass
 
+<<<<<<< HEAD
 @csrf_exempt 
 def addEvent(request):  
+=======
+
+@csrf_exempt
+def add_event(request):
+>>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
     
     if request.method == 'POST':
         jsnCreateEventData = request.POST.get('arrCreateEventData')
         lstCreateEventData = json.loads(jsnCreateEventData)
         strFileName = request.POST.get('strFileName')
         file = request.FILES['file']
+<<<<<<< HEAD
         
         dctResponse = {'strStatus':''}    
+=======
+
+        response_dict = {'strStatus': ''}
+        response_dict = serverside_validation(request,create_event_data_list)
+        if response_dict['strStatus'] == 'ERROR':
+            response_json = json.dumps(response_dict)
+            mimetype = 'application/json'
+            return HttpResponse(response_json, mimetype)
+
+>>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
         # // Event Already Exist Checking
         tbmEvent = clsEventDetails.objects.filter(Q(vhr_event_name__iexact=lstCreateEventData['strEventName']))
         try:
+<<<<<<< HEAD
             if tbmEvent[0]:
                 messages.error(request,'Event Already Exists.Please Choose Another Event Name!')
                 dctResponse['strStatus'] = 'ERROR'
@@ -153,16 +275,42 @@ def addEvent(request):
         # //Checking File Exsist
         strFileDirName = os.path.join('EventApp','static','attachment',strFileName)
         default_storage.save(strFileDirName, ContentFile(file.read()))
+=======
+            if database_event_details[0]:
+                messages.error(request, 'Event Already Exists.Please Choose Another Event Name!')
+                response_dict['strStatus'] = 'ERROR'
+        except Exception as err:
+            database_event_details = clsEventDetails()
+            database_event_details.vhr_event_name = create_event_data_list['strEventName']
+            database_event_details.fk_user_id = int(request.session['intLoginUserId'])
+            database_event_details.dat_event_start_date_time = create_event_data_list['strEventStartTime']
+            database_event_details.dat_event_end_date_time = create_event_data_list['strEventEndTime']
+            database_event_details.vhr_event_venue = create_event_data_list['strEventLocation']
+            database_event_details.vhr_event_description = create_event_data_list['strEventDescription']
+            database_event_details.vhr_event_file_upload = file_name
+            database_event_details.int_last_action = int(create_event_data_list['intLastAction']) + 1
+            database_event_details.int_event_location_type = int(create_event_data_list['intEventLocation'])
+            database_event_details.int_if_paid = int(create_event_data_list['intIfPaid'])
+            database_event_details.dat_created_datetime = datetime.datetime.now()
+            database_event_details.save()
+            messages.success(request, 'Event added successfully!')
+            response_dict['strStatus'] = 'SUCCESS'
+        
+        # //Checking File Exist
+        file_directory_name = os.path.join('EventApp', 'static', 'attachment', file_name)
+        default_storage.save(file_directory_name, ContentFile(file.read()))
+>>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
         
         jsnResponse = json.dumps(dctResponse)
         mimetype = 'application/json'
         return HttpResponse(jsnResponse, mimetype)
     else:
-        return render(request,'addEvent.html')
+        return render(request, 'addEvent.html')
     pass
-  
+
+
 @csrf_exempt 
-def updateEvent(request):
+def update_event(request):
         
     if request.method == 'POST':
         jsnCreateEventData = request.POST.get('arrCreateEventData')
@@ -170,7 +318,16 @@ def updateEvent(request):
         strFileName = request.POST.get('strFileName')
         file = request.FILES['file']
         
+<<<<<<< HEAD
         dctResponse = {'strStatus':''}
+=======
+        response_dict = {'strStatus': ''}
+        response_dict = serverside_validation(request, create_event_data_list)
+        if response_dict['strStatus'] == 'ERROR':
+            response_json = json.dumps(response_dict)
+            mimetype = 'application/json'
+            return HttpResponse(response_json, mimetype)
+>>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
         # // Event Already Exist Checking
         tbmEvent = clsEventDetails.objects.filter(Q(vhr_event_name__iexact=lstCreateEventData['strEventName']),~Q(pk_event_id=lstCreateEventData['intPkEventsId']),~Q(int_last_action=0))
         try:
@@ -203,6 +360,7 @@ def updateEvent(request):
     else:
         return render(request,'addEvent.html')
     pass
+<<<<<<< HEAD
   
 def eventsList(request):
     
@@ -226,9 +384,50 @@ def eventsList(request):
         dctAllItems['intEventLocation'] = tbmEachItem.int_event_location_type
         lstAllItems.append(dctAllItems)
     return render(request,'eventsList.html',{'lstAllItems':lstAllItems})
+=======
 
-def deleteEvent(request):
+
+def events_list(request):
+
+    event_location_type = ['', 'Physical venue', 'Online', 'Recorded Events']
+
+    database_items = clsEventDetails.objects.filter(~Q(int_last_action = 0),Q(fk_user_id = int(request.session['intLoginUserId'])))
+    all_items_list = []
+    date_output_format = '%Y-%m-%d %H:%M:%S'
+    for each_item in database_items:
+        
+        all_items_dict = dict()
+        all_items_dict['intPkEventId'] = each_item.pk_event_id
+        all_items_dict['intFkUserId'] = each_item.fk_user_id
+        all_items_dict['strEventStartDateTime'] = each_item.dat_event_start_date_time.strftime(date_output_format)
+        all_items_dict['strEventEndDateTime'] = each_item.dat_event_end_date_time.strftime(date_output_format)
+        all_items_dict['strEventName'] = each_item.vhr_event_name
+        all_items_dict['strEventVenue'] = each_item.vhr_event_venue
+        all_items_dict['strEventDescription'] = each_item.vhr_event_description.replace('\n','')
+        all_items_dict['strEventPoster'] = each_item.vhr_event_file_upload
+        all_items_dict['strCreatedDateTime'] = each_item.dat_created_datetime.strftime(date_output_format)
+        all_items_dict['intLastAction'] = each_item.int_last_action
+        all_items_dict['intIfPaid'] = each_item.int_if_paid
+        all_items_dict['intEventLocation'] = each_item.int_event_location_type
+        all_items_dict['strEventLocation'] = event_location_type[each_item.int_event_location_type]
+        all_items_dict['strPublicationDetails'] = 'Unpublished.Payment needed(₹100)'
+        if each_item.int_if_paid:
+            all_items_dict['strPublicationDetails'] = 'Published'
+        all_items_list.append(all_items_dict)
+    events = ''
+    nums = ''
+    if len(all_items_list):
+        p = Paginator(all_items_list, 3)
+        page = request.GET.get('page')
+        events = p.get_page(page)
+        nums = "a" * events.paginator.num_pages
+    return render(request, 'eventsList.html', {'lstAllItems': all_items_list, 'events': events, 'nums': nums})
+>>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
+
+
+def delete_event(request):
     if request.method == 'POST':
+<<<<<<< HEAD
         jsnCreateEventData = request.POST.get('jsnEventDeleteData')
         lstCreateEventData = json.loads(jsnCreateEventData)
         dctResponse = {'strStatus':''}
@@ -239,6 +438,22 @@ def deleteEvent(request):
             dctResponse['strStatus'] = 'SUCCESS'
             dctResponse['strMessage'] = 'Event deleted successfully!'
             
+=======
+        create_event_data_json = request.POST.get('jsnEventDeleteData')
+        create_event_data_list = json.loads(create_event_data_json)
+
+        response_dict = serverside_validation_delete(request, create_event_data_list)
+        if response_dict['strStatus'] == 'ERROR':
+            response_json = json.dumps(response_dict)
+            mimetype = 'application/json'
+            return HttpResponse(response_json, mimetype)
+        try:
+            database_event = clsEventDetails.objects.get(pk_event_id =create_event_data_list['intPkEventId'] )
+            database_event.int_last_action = 0
+            database_event.save()
+            response_dict['strStatus'] = 'SUCCESS'
+            response_dict['strMessage'] = 'Event deleted successfully!'
+>>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
         except:
             dctResponse['strStatus'] = 'ERROR'
             dctResponse['strMessage'] = 'Delete not Possible.Try Again'
@@ -246,15 +461,131 @@ def deleteEvent(request):
         mimetype = 'application/json'
         return HttpResponse(jsnResponse, mimetype)       
     else:
-        return render(request,'eventsList.html')
+        return render(request, 'eventsList.html')
 
+<<<<<<< HEAD
 @csrf_exempt 
+=======
+
+def serverside_validation(request, create_event_data_list):
+
+    response_dict = {'strStatus': ''}
+    if not create_event_data_list['strEventName']:
+        response_dict['strMessage'] = 'Event Name is Required'
+        response_dict['strStatus'] = 'ERROR'
+        return response_dict
+
+    if not create_event_data_list['strEventLocation']:
+        response_dict['strMessage'] = 'Event Venue is Required'
+        response_dict['strStatus'] = 'ERROR'
+        return response_dict
+
+    if not create_event_data_list['strEventStartTime']:
+        response_dict['strMessage'] = 'Event Start date and time is Required'
+        response_dict['strStatus'] = 'ERROR'
+        return response_dict
+
+    if not create_event_data_list['strEventEndTime']:
+        response_dict['strMessage'] = 'Event end date and time is Required'
+        response_dict['strStatus'] = 'ERROR'
+        return response_dict
+    if not create_event_data_list['strEventDescription']:
+        response_dict['strMessage'] = 'Event description is Required'
+        response_dict['strStatus'] = 'ERROR'
+        return response_dict
+    if not create_event_data_list['intEventLocation']:
+        response_dict['strMessage'] = 'Event Location Type is Required'
+        response_dict['strStatus'] = 'ERROR'
+        return response_dict
+
+    if create_event_data_list['intPkEventsId']:  # Update mode
+        database_update_event = clsEventDetails.objects.get(pk_event_id=create_event_data_list['intPkEventsId'])
+        if database_update_event.fk_user_id != request.session['intLoginUserId']:
+            response_dict['strMessage'] = 'Update Not Possible.An event can be updated by the creator only.'
+            response_dict['strStatus'] = 'ERROR'
+            return response_dict
+    return response_dict
+
+
+def serverside_validation_delete(request, create_event_data_list):
+    response_dict = {'strStatus': ''}
+    if not create_event_data_list['intPkEventId']:
+        response_dict['strMessage'] = 'Delete Not Possible'
+        response_dict['strStatus'] = 'ERROR'
+        return response_dict
+    try:
+        database_delete_event = clsEventDetails.objects.get(pk_event_id=create_event_data_list['intPkEventId'])
+        if database_delete_event.fk_user_id != request.session['intLoginUserId']:
+            response_dict['strMessage'] = 'Delete Not Possible.An event can be deleted by the creator only.'
+            response_dict['strStatus'] = 'ERROR'
+            return response_dict
+    except:
+        pass
+
+    return response_dict
+
+
+@csrf_exempt
+def edit_event(request, key_id=''):
+    if request.method == 'POST':
+        create_event_data_json = request.POST.get('arrCreateEventData')
+        create_event_data_list = json.loads(create_event_data_json)
+        file_name = request.POST.get('strFileName')
+        file = request.FILES['file']
+
+        response_dict = {'strStatus': ''}
+        response_dict = serverside_validation(create_event_data_list)
+        if response_dict['strStatus'] == 'ERROR':
+            response_json = json.dumps(response_dict)
+            mimetype = 'application/json'
+            return HttpResponse(response_json, mimetype)
+
+        # // Event Already Exist Checking
+        database_event_details = clsEventDetails.objects.filter(
+            Q(vhr_event_name__iexact=create_event_data_list['strEventName']))
+        try:
+            if database_event_details[0]:
+                messages.error(request, 'Event Already Exists.Please Choose Another Event Name!')
+                response_dict['strStatus'] = 'ERROR'
+        except Exception as err:
+            database_event_details = clsEventDetails()
+            database_event_details.vhr_event_name = create_event_data_list['strEventName']
+            database_event_details.fk_user_id = int(request.session['intLoginUserId'])
+            database_event_details.dat_event_start_date_time = create_event_data_list['strEventStartTime']
+            database_event_details.dat_event_end_date_time = create_event_data_list['strEventEndTime']
+            database_event_details.vhr_event_venue = create_event_data_list['strEventLocation']
+            database_event_details.vhr_event_description = create_event_data_list['strEventDescription']
+            database_event_details.vhr_event_file_upload = file_name
+            database_event_details.int_last_action = int(create_event_data_list['intLastAction']) + 1
+            database_event_details.int_event_location_type = int(create_event_data_list['intEventLocation'])
+            database_event_details.int_if_paid = int(create_event_data_list['intIfPaid'])
+            database_event_details.dat_created_datetime = datetime.datetime.now()
+            database_event_details.save()
+            messages.success(request, 'Event added successfully!')
+            response_dict['strStatus'] = 'SUCCESS'
+
+        # //Checking File Exist
+        file_directory_name = os.path.join('EventApp', 'static', 'attachment', file_name)
+        default_storage.save(file_directory_name, ContentFile(file.read()))
+
+        response_json = json.dumps(response_dict)
+        mimetype = 'application/json'
+        return HttpResponse(response_json, mimetype)
+    else:
+        return render(request, 'addEvent.html')
+    pass
+
+
+@csrf_exempt
+>>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
 def loadPaymentMethod(request):
    
     return render(request,'payment.html')
 
+
 # This is your test secret API key.
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
 
 def createCheckoutSession(request):
    
@@ -270,7 +601,7 @@ def createCheckoutSession(request):
         {
             'price_data' : {
                 'currency': 'inr',
-                'unit_amount':100,
+                'unit_amount':10000,
                 'product_data':{
                     'name':'Publishing Fee',
                 }     
