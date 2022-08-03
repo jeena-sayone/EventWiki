@@ -44,6 +44,12 @@
               thumbnail_poster:hover {
                 box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
               }
+              .toast {
+                top: 10%;
+                left: 50%;
+                transform: translate(-50%, 0px);
+                z-index: 9999;
+              }
         </style>
         <script>
             var arrGloHtmlAllEventsData = JSON.parse(JSON.stringify(eval("(" + "{{lstAllItems|safe}}" + ")")));  
@@ -101,12 +107,53 @@
                                 <td style="width:5%; text-transform:uppercase; ">Edit</td>
                                 <td style="width:5%; text-transform:uppercase;">Delete</td>
                             </tr>
+<<<<<<< HEAD
                             <tbody id = "tbyIdListAllEvents"></tbody>
                           
+=======
+                            <tbody id = "tbyIdListAllEvents1">
+                            {% for objEvents in events %}
+                            <tr class = "trCls" id = "trId{{ objEvents.intPkEventId }}">
+                                <td>
+                                    <a target="_blank" href= "static/attachment/{{ objEvents.strEventPoster }}">
+                                        <img class="thumbnail_poster" src="static/attachment/{{ objEvents.strEventPoster }}"/>
+                                    </a>
+                                </td>
+                            <td id="tdIdSlNo{{ objEvents.intPkEventId }}">
+                                {{objEvents.strEventName}}
+                            </td>
+                            <td id="id{{ objEvents.intPkEventId }}" >{{ objEvents.strEventVenue }}</td>
+                            <td>{{ objEvents.strEventLocation }}</td>
+                            <td>{{ objEvents.strEventDescription }}</td>
+                            <td>{{ objEvents.strEventStartDateTime }}</td>
+                            <td>{{ objEvents.strEventEndDateTime }}</td>
+                            <td>{{ objEvents.strPublicationDetails }}</td>
+                            <td>{% if objEvents.intIfPaid == 1 %}
+                                Paid
+                                {% else %}
+                                <a class="btn btn-primary" onclick = "fnLoadPayment({{ objEvents.intPkEventId }})" id="btnIdPayment_{{ objEvents.intPkEventId }}" >Payment</a>
+                                {% endif %}
+                            </td>
+                            <td class="edit" style="text-align: center;"><a href="#"  onclick="onEditIconClick({{ objEvents.intPkEventId }});" style="color: #212529;"><i class="fa  fa-pencil"></i></a></td>
+                            <td class="delete" style="text-align: center;"><a href="#" onclick="onDeleteIconClick('{{ objEvents.intPkEventId }}', '{{ objEvents.strEventName }}', '{{ objEvents.intLastAction }}');" style="color: #212529;"><i class="fa fa-times"></i></a></td>
+<!--                            <td class="delete" style="text-align: center;"><a href="#" onclick="onDeleteIconClick(\'' + {{ objEvents.intPkEventId }} + '\',\'' + {{ objEvents.strEventName }} + '\',\'' + {{ objEvents.intLastAction }} + '\';" style="color: #212529;"><i class="fa fa-times"></i></a></td>-->
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+>>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
                         </table>
                     </form>
                 </div>          
         </section>
+<!--        toast-->
+        <div class="toast align-items-center text-white bg-success border-0" style="position: absolute;" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body" id="divIdMessages">
+            <!-- messages -->
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
        
         <!-- Footer-->
         <footer class="footer py-4">
@@ -136,11 +183,13 @@
 
         <!-- Alertify Javascript File -->
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-        {% for flashmsg in messages %}
-            <script>        
-                alertify.set('notifier','position', 'top-center');
-                alertify.success('{{flashmsg}}');
-            </script>
-        {%endfor%} 
+<!--        {% for flashmsg in messages %}-->
+<!--            <script>        -->
+<!--                alertify.set('notifier','position', 'top-center');-->
+<!--                alertify.success('{{flashmsg}}');-->
+<!--            </script>-->
+<!--        {%endfor%}-->
+
+
     </body>
 </html>
