@@ -1,4 +1,4 @@
-var arrAllEventLocationType = ['','Physical venue','Online','Recorded Events'];
+var arrAllEventLocationType = ['','Pysical venue','Online','Recorded Events'];
 var objGlobalAllEvents = {};
 $(document).ready(function () {
     // Show List Data
@@ -43,8 +43,6 @@ function fnLoadPayment(intPkEventId){
 
 // List Delete Icon Click
 function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
-    $("#divIdMessages").empty()
-
     var arrDeleteEventData = new Array();
    
     arrDeleteEventData = {
@@ -54,7 +52,7 @@ function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
    }
 
  // Y/N
- if (!(confirm('Do you want to delete the Event ?'))) {
+ if (!(confirm('Do you want to delete the Event ') + strEventName + '"?')) {
     return;
 }
 
@@ -62,20 +60,17 @@ function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
  var jsnEventDeleteData = JSON.stringify(arrDeleteEventData)
  $.ajax({
     type: 'POST',
-    url: '/delete_event',
+    url: 'deleteEvent',
     dataType: 'json',
     data: {'jsnEventDeleteData' : jsnEventDeleteData,
            'csrfmiddlewaretoken' : csrftoken,
     },
     success: function (data) {
         if(data.strStatus=='ERROR') {
-            $('.toast').toast('show');
-            $("#divIdMessages").append(data.strMessage)
+            alert(data.strMessage)
         }
         else if(data.strStatus=='SUCCESS') {
-            $('.toast').toast('show');
-            $("#divIdMessages").append(data.strMessage)
-
+            alert(data.strMessage)
             // Remove record in List
             $('#trId' + intPkEventId).remove();
            //Remove deleted element in global array "objGloHtmlAllEventsData" using 'delete' method
@@ -89,16 +84,10 @@ function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
 
 //On Edit Icon Click Function
 function onEditIconClick(intPkEventId){
-    $("#divIdMessages").empty()
     var objEventDetails = objGlobalAllEvents[intPkEventId];
     // # Set Session Data
     sessionStorage.setItem("objEventDetails", JSON.stringify(objEventDetails));
-<<<<<<< HEAD
     window.open('addEvent', '_self');
-=======
-    window.open('edit-event/id='+intPkEventId, '_self');
-
->>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
 }
 
 // Sites injection control

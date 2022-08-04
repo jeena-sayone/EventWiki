@@ -4,12 +4,12 @@ from django.urls import reverse
 import json
 import os
 import datetime
-import stripe
-
 from django.utils import timezone
+
 from requests import request, session
+import stripe
 from pprint import pprint
-from django.shortcuts import render, redirect
+from django.shortcuts import render,redirect
 from django.db.models import Q
 from django.contrib import messages
 from django.http import HttpResponse
@@ -105,9 +105,12 @@ class LoginClass(View):
                 messages.success(request, 'Signin Success!')
                 return redirect('events_list')
         except Exception as err:
-            messages.error(request, 'Invalid Email Or Password.')
+            messages.error(request,'Invalid Email Or Password.')
             return redirect('login')
+    else:
+        return render(request,'login.html',{'form':form})
 
+    return render(request,'login.html',{'form':form})
 
 #Logout
 def logout(request):
@@ -117,7 +120,6 @@ def logout(request):
     request.session['strEmail'] = ''
     # request.session.flush()
     return redirect('index')
-
 
 # Login
 def signup(request):
@@ -204,12 +206,11 @@ def add_event(request):
         mimetype = 'application/json'
         return HttpResponse(jsnResponse, mimetype)
     else:
-        return render(request, 'addEvent.html')
+        return render(request,'addEvent.html')
     pass
-
-
+  
 @csrf_exempt 
-def update_event(request):
+def updateEvent(request):
         
     if request.method == 'POST':
         jsnCreateEventData = request.POST.get('arrCreateEventData')
@@ -317,7 +318,7 @@ def delete_event(request):
         mimetype = 'application/json'
         return HttpResponse(jsnResponse, mimetype)       
     else:
-        return render(request, 'eventsList.html')
+        return render(request,'eventsList.html')
 
 
 def serverside_validation(request, create_event_data_list):
@@ -434,10 +435,8 @@ def loadPaymentMethod(request):
    
     return render(request,'payment.html')
 
-
 # This is your test secret API key.
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
 
 def createCheckoutSession(request):
    
@@ -453,7 +452,7 @@ def createCheckoutSession(request):
         {
             'price_data' : {
                 'currency': 'inr',
-                'unit_amount':10000,
+                'unit_amount':100,
                 'product_data':{
                     'name':'Publishing Fee',
                 }     
@@ -482,18 +481,14 @@ def paymentCancel(request):
 
 @csrf_exempt
 def my_webhook_view(request):
-    pprint("1111111111")
     payload = request.body
-    print(payload)
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
     try:
-        pprint("222222222")
         event = stripe.Webhook.construct_event(
         payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
     except ValueError as e:
-        pprint("###########")
         # Invalid payload
         return HttpResponse(status=400)
     except stripe.error.SignatureVerificationError as e:
