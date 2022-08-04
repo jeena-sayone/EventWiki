@@ -44,7 +44,7 @@
                         
                         {% if request.session.intLoginUserId %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'events_list' %}"><i class="bi bi-plus"></i>My Events</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'eventsList' %}"><i class="bi bi-plus"></i>My Events</a></li>
                         <li class="nav-item"><a class="nav-link" href=""><i class="fa fa-user"></i> {{request.session.strLoginUserName}}</a></li>
 
                         {% else %}

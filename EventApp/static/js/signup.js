@@ -42,6 +42,7 @@ $('#btnIdSignup').click(function(event) {
         'strPassword' : $.trim($('#txtIdPassword').val())
 }
     var jsnSignupData = JSON.stringify(arrSignupData);
+    console.log(jsnSignupData)
     $.ajax({
         type: 'POST',
         url: 'signup',
@@ -51,21 +52,12 @@ $('#btnIdSignup').click(function(event) {
         },
         success: function (data) {
             if(data.strStatus=='ERROR') {
-<<<<<<< HEAD
                 alert(data.strMessage);
                 
             }
             else if(data.strStatus=='SUCCESS') {
                 alert(data.strMessage);
                 window.open('login');              
-=======
-                $("#divIdErrorContainer").append(data.strMessage);
-                $("#divIdErrorContainer").show()
-                
-            }
-            else if(data.strStatus=='SUCCESS') {
-                window.open('login','_self');
->>>>>>> d207192cd6fc1fdd077052236cbf6786d7b73303
             }
         }
 });
