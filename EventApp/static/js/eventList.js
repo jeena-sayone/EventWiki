@@ -1,4 +1,4 @@
-var arrAllEventLocationType = ['','Pysical venue','Online','Recorded Events'];
+var arrAllEventLocationType = ['','Physical venue','Online','Recorded Events'];
 var objGlobalAllEvents = {};
 $(document).ready(function () {
     // Show List Data
@@ -8,26 +8,6 @@ $(document).ready(function () {
 function showAllEventsData(){
     $("#tbyIdListAllEvents").empty();
     for (var i = 0; i < arrGloHtmlAllEventsData.length; i++) {
-
-         var strPayment = '<a class="btn btn-primary" onclick = "fnLoadPayment(\''+ arrGloHtmlAllEventsData[i].intPkEventId +'\')" id="btnIdPayment_'+arrGloHtmlAllEventsData[i].intPkEventId+'" >Payment</a>';
-        if(arrGloHtmlAllEventsData[i].intIfPaid == 1){
-            var strPayment = 'Paid';
-        }
-    
-        var strTableRow = '<tr class = "trCls" id = "trId' + arrGloHtmlAllEventsData[i].intPkEventId +'">\n' +
-                            '<td><a target="_blank" href="static/attachment/'+arrGloHtmlAllEventsData[i].strEventPoster+'"><img class="thumbnail_poster" src="static/attachment/'+arrGloHtmlAllEventsData[i].strEventPoster+'" ></a></td>\n' +
-
-                            '<td id="tdIdSlNo'+arrGloHtmlAllEventsData[i].intPkEventId+'">' +  arrGloHtmlAllEventsData[i].strEventName+ '</td>\n' +
-                            '<td id="id' +arrGloHtmlAllEventsData[i].intPkEventId + '" >' +arrGloHtmlAllEventsData[i].strEventVenue + '</td>\n' +
-                            '<td>' +arrAllEventLocationType[arrGloHtmlAllEventsData[i].intEventLocation] + '</td>\n' +
-                            '<td>' +arrGloHtmlAllEventsData[i].strEventDescription + '</td>\n' +
-                            '<td>' +arrGloHtmlAllEventsData[i].strEventStartDateTime + '</td>\n' +
-                            '<td>' +arrGloHtmlAllEventsData[i].strEventEndDateTime + '</td>\n' +
-                             '<td>'+strPayment+'</td>\n' +
-                            '<td class="edit"><a href="#"  onclick="onEditIconClick(\''+ arrGloHtmlAllEventsData[i].intPkEventId +'\');" style="color: #212529;"><i class="fa  fa-pencil"></i></a></td>\n' +
-                            '<td class="delete"><a href="#"  onclick="onDeleteIconClick(\''+ arrGloHtmlAllEventsData[i].intPkEventId +'\',\''+ arrGloHtmlAllEventsData[i].strEventName +'\',\''+ arrGloHtmlAllEventsData[i].intLastAction +'\');" style="color: #212529;"><i class="fa fa-times"></i></a></td>\n' +
-                        '</tr>';
-                        $("#tbyIdListAllEvents").append(strTableRow);
 
         objGlobalAllEvents[arrGloHtmlAllEventsData[i].intPkEventId] = arrGloHtmlAllEventsData[i];
     }
@@ -43,6 +23,8 @@ function fnLoadPayment(intPkEventId){
 
 // List Delete Icon Click
 function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
+    $("#divIdMessages").empty()
+
     var arrDeleteEventData = new Array();
    
     arrDeleteEventData = {
@@ -52,7 +34,7 @@ function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
    }
 
  // Y/N
- if (!(confirm('Do you want to delete the Event ') + strEventName + '"?')) {
+ if (!(confirm('Do you want to delete the Event ?'))) {
     return;
 }
 
@@ -60,17 +42,20 @@ function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
  var jsnEventDeleteData = JSON.stringify(arrDeleteEventData)
  $.ajax({
     type: 'POST',
-    url: 'deleteEvent',
+    url: '/delete_event',
     dataType: 'json',
     data: {'jsnEventDeleteData' : jsnEventDeleteData,
            'csrfmiddlewaretoken' : csrftoken,
     },
     success: function (data) {
         if(data.strStatus=='ERROR') {
-            alert(data.strMessage)
+            $('.toast').toast('show');
+            $("#divIdMessages").append(data.strMessage)
         }
         else if(data.strStatus=='SUCCESS') {
-            alert(data.strMessage)
+            $('.toast').toast('show');
+            $("#divIdMessages").append(data.strMessage)
+
             // Remove record in List
             $('#trId' + intPkEventId).remove();
            //Remove deleted element in global array "objGloHtmlAllEventsData" using 'delete' method
@@ -84,10 +69,12 @@ function onDeleteIconClick(intPkEventId,strEventName,intLastAction){
 
 //On Edit Icon Click Function
 function onEditIconClick(intPkEventId){
+    $("#divIdMessages").empty()
     var objEventDetails = objGlobalAllEvents[intPkEventId];
     // # Set Session Data
     sessionStorage.setItem("objEventDetails", JSON.stringify(objEventDetails));
-    window.open('addEvent', '_self');
+    window.open('edit-event/id='+intPkEventId, '_self');
+
 }
 
 // Sites injection control

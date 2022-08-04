@@ -26,7 +26,7 @@
                     width: 100%;
                   }
     
-            td, th {border: 1px solid #dddddd;
+            th, th {border: 1px solid #dddddd;
                     text-align: left;
                     padding: 8px;
                     border-color: #f1e20d;
@@ -34,7 +34,6 @@
     
             tr:nth-child(even) {background-color: #dddddd;}
             .thumbnail_poster {
-                border: 1px solid #ddd; /* Gray border */
                 border-radius: 4px;  /* Rounded border */
                 padding: 5px; /* Some padding */
                 width: 80px; /* Set a small width */
@@ -43,6 +42,12 @@
               /* Add a hover effect (blue shadow) */
               thumbnail_poster:hover {
                 box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+              }
+              .toast {
+                top: 10%;
+                left: 50%;
+                transform: translate(-50%, 0px);
+                z-index: 9999;
               }
         </style>
         <script>
@@ -83,30 +88,90 @@
                     <div style="display: block; text-align: center;">
                     <div class="masthead-heading text-uppercase text-center" style="display: inline-block;"><h2>My Events</h2></div>
                     <div class="create-new-event-button">
-                        <a class="btn btn-primary" href="{% url 'addEvent' %}"><i class="fa fa-plus"></i> New Event</a>
+                        <a class="btn btn-primary" href="{% url 'add_event' %}"><i class="fa fa-plus"></i> New Event</a>
                     </div>
                     </div>
-                    <form id="frmIdViewEvents">
+<!--                    <form id="frmIdViewEvents">-->
                         {% csrf_token %}
                         <table style="width:100%">
                             <tr>
-                                <td style="width:10%; text-transform:uppercase;">Poster</td>
-                                <td style="width:15%; text-transform:uppercase;">Event</td>
-                                <td style="width:10%; text-transform:uppercase ;">Venue</td>
-                                <td style="width:10%; text-transform:uppercase;">Event Type</td>
-                                <td style="width:20%; text-transform:uppercase">Description</td>
-                                <td style="width:10%; text-transform:uppercase;">Start Date</td>
-                                <td style="width:10%; text-transform:uppercase;">End Date</td>
-                                <td style="width:5%; text-transform:uppercase; ">Payment</td>
-                                <td style="width:5%; text-transform:uppercase; ">Edit</td>
-                                <td style="width:5%; text-transform:uppercase;">Delete</td>
+                                <th style="width:10%; text-transform:uppercase;">Poster</th>
+                                <th style="width:15%; text-transform:uppercase;">Event</th>
+                                <th style="width:10%; text-transform:uppercase ;">Venue</th>
+                                <th style="width:10%; text-transform:uppercase;">Event Type</th>
+                                <th style="width:15%; text-transform:uppercase">Description</th>
+                                <th style="width:10%; text-transform:uppercase;">Start Date</th>
+                                <th style="width:10%; text-transform:uppercase;">End Date</th>
+                                <th style="width:10%; text-transform:uppercase;">Publication Details</th>
+                                <th style="width:5%; text-transform:uppercase; ">Payment</th>
+                                <th style="width:5%; text-transform:uppercase; ">Edit</th>
+                                <th style="width:5%; text-transform:uppercase;">Delete</th>
                             </tr>
-                            <tbody id = "tbyIdListAllEvents"></tbody>
-                          
+                            <tbody id = "tbyIdListAllEvents1">
+                            {% for objEvents in events %}
+                            <tr class = "trCls" id = "trId{{ objEvents.intPkEventId }}">
+                                <td>
+                                    <a target="_blank" href= "static/attachment/{{ objEvents.strEventPoster }}">
+                                        <img class="thumbnail_poster" src="static/attachment/{{ objEvents.strEventPoster }}"/>
+                                    </a>
+                                </td>
+                            <td id="tdIdSlNo{{ objEvents.intPkEventId }}">
+                                {{objEvents.strEventName}}
+                            </td>
+                            <td id="id{{ objEvents.intPkEventId }}" >{{ objEvents.strEventVenue }}</td>
+                            <td>{{ objEvents.strEventLocation }}</td>
+                            <td>{{ objEvents.strEventDescription }}</td>
+                            <td>{{ objEvents.strEventStartDateTime }}</td>
+                            <td>{{ objEvents.strEventEndDateTime }}</td>
+                            <td>{{ objEvents.strPublicationDetails }}</td>
+                            <td>{% if objEvents.intIfPaid == 1 %}
+                                Paid
+                                {% else %}
+                                <a class="btn btn-primary" onclick = "fnLoadPayment({{ objEvents.intPkEventId }})" id="btnIdPayment_{{ objEvents.intPkEventId }}" >Payment</a>
+                                {% endif %}
+                            </td>
+                            <td class="edit" style="text-align: center;"><a href="#"  onclick="onEditIconClick({{ objEvents.intPkEventId }});" style="color: #212529;"><i class="fa  fa-pencil"></i></a></td>
+                            <td class="delete" style="text-align: center;"><a href="#" onclick="onDeleteIconClick('{{ objEvents.intPkEventId }}', '{{ objEvents.strEventName }}', '{{ objEvents.intLastAction }}');" style="color: #212529;"><i class="fa fa-times"></i></a></td>
+<!--                            <td class="delete" style="text-align: center;"><a href="#" onclick="onDeleteIconClick(\'' + {{ objEvents.intPkEventId }} + '\',\'' + {{ objEvents.strEventName }} + '\',\'' + {{ objEvents.intLastAction }} + '\';" style="color: #212529;"><i class="fa fa-times"></i></a></td>-->
+                            </tr>
+                            {% endfor %}
+                            </tbody>
                         </table>
-                    </form>
+<!--                    </form>-->
+                    <section>
+                    <nav aria-label="Page navigation">
+                      <ul class="pagination justify-content-center">
+                          {% if events.has_previous %}
+                          <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+                          <li class="page-item"><a class="page-link" href="?page={{ events.previous_page_number }}">Previous</a></li>
+                          {% endif %}
+
+                          {% for i in nums %}
+                          {% if events.number == forloop.counter %}
+                          <li class="page-item disabled"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+                          {% else %}
+                          <li class="page-item"><a class="page-link" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a></li>
+                          {% endif %}
+                          {% endfor %}
+
+                          {% if events.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ events.next_page_number }}">Next</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ events.paginator.num_pages }}">Last</a></li>
+                          {% endif %}
+                      </ul>
+                    </nav>
+                    </section>
                 </div>          
         </section>
+<!--        toast-->
+        <div class="toast align-items-center text-white bg-success border-0" style="position: absolute;" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body" id="divIdMessages">
+            <!-- messages -->
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
        
         <!-- Footer-->
         <footer class="footer py-4">
@@ -136,11 +201,13 @@
 
         <!-- Alertify Javascript File -->
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-        {% for flashmsg in messages %}
-            <script>        
-                alertify.set('notifier','position', 'top-center');
-                alertify.success('{{flashmsg}}');
-            </script>
-        {%endfor%} 
+<!--        {% for flashmsg in messages %}-->
+<!--            <script>        -->
+<!--                alertify.set('notifier','position', 'top-center');-->
+<!--                alertify.success('{{flashmsg}}');-->
+<!--            </script>-->
+<!--        {%endfor%}-->
+
+
     </body>
 </html>
